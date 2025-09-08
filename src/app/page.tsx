@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import Link from "next/link"
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
@@ -35,9 +37,24 @@ export default function Home() {
                 <p>✓ Next.js 14 kurulumu tamamlandı</p>
                 <p>✓ TailwindCSS yapılandırıldı</p>
                 <p>✓ Stitch tasarımları analiz edildi</p>
-                <p className="text-primary font-medium">→ Sonraki: Database şeması kurulumu</p>
+                <p>✓ Database şeması oluşturuldu</p>
+                <p>✓ Prisma ORM yapılandırıldı</p>
+                <p>✓ UI Bileşenleri geliştirild</p>
+                <p className="text-primary font-medium">→ Sonraki: Giriş ekranı geliştirme</p>
               </div>
             </div>
+            
+            <Link 
+              href="/components" 
+              className="block w-full bg-surface hover:bg-surface-light rounded-lg p-4 text-center transition-colors"
+            >
+              <span className="material-symbols-outlined text-primary mb-2 block">
+                palette
+              </span>
+              <span className="text-text-primary font-medium">
+                UI Bileşenlerini Görüntüle
+              </span>
+            </Link>
           </div>
         </div>
       </div>
