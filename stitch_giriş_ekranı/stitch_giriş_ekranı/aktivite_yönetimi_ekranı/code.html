@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Spline+Sans%3Awght%40400%3B500%3B700" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+      :root {
+        --select-button-svg: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724px%27 height=%2724px%27 fill=%27rgb(150,197,169)%27 viewBox=%270 0 256 256%27%3e%3cpath d=%27M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z%27%3e%3c/path%3e%3c/svg%3e');
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#122118]">
+<div class="relative flex size-full min-h-screen flex-col dark justify-between group/design-root overflow-x-hidden" style='font-family: "Spline Sans", "Noto Sans", sans-serif;'>
+<div class="flex-grow">
+<header class="sticky top-0 z-10 flex items-center justify-between bg-[#122118]/80 p-4 pb-2 backdrop-blur-sm">
+<button class="text-white flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-white/10">
+<span class="material-symbols-outlined text-2xl">close</span>
+</button>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">Yeni Aktivite</h2>
+</header>
+<main class="p-4 space-y-4">
+<div class="space-y-3">
+<label class="sr-only" for="activity-name">Aktivite Adı</label>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-2 focus:ring-[#38e07b] border-none bg-[#264532] h-14 placeholder:text-[#96c5a9] p-4 text-base font-normal leading-normal" id="activity-name" placeholder="Aktivite Adı" value=""/>
+<div class="grid grid-cols-2 gap-3">
+<div>
+<label class="sr-only" for="date">Tarih</label>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-2 focus:ring-[#38e07b] border-none bg-[#264532] h-14 placeholder:text-[#96c5a9] p-4 text-base font-normal leading-normal" id="date" onblur="(this.type='text')" onfocus="(this.type='date')" placeholder="Tarih" type="text"/>
+</div>
+<div>
+<label class="sr-only" for="time">Saat</label>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-2 focus:ring-[#38e07b] border-none bg-[#264532] h-14 placeholder:text-[#96c5a9] p-4 text-base font-normal leading-normal" id="time" onblur="(this.type='text')" onfocus="(this.type='time')" placeholder="Saat" type="text"/>
+</div>
+</div>
+<label class="sr-only" for="points">Puan Değeri</label>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-2 focus:ring-[#38e07b] border-none bg-[#264532] h-14 placeholder:text-[#96c5a9] p-4 text-base font-normal leading-normal" id="points" placeholder="Puan Değeri" type="number" value=""/>
+<label class="sr-only" for="repeat">Tekrarlama</label>
+<select class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-2 focus:ring-[#38e07b] border-none bg-[#264532] h-14 bg-[image:--select-button-svg] placeholder:text-[#96c5a9] p-4 text-base font-normal leading-normal appearance-none" id="repeat">
+<option disabled="" selected="" value="">Tekrarlama</option>
+<option value="daily">Her Gün</option>
+<option value="weekly">Her Hafta</option>
+<option value="monthly">Her Ay</option>
+<option value="never">Asla</option>
+</select>
+</div>
+<div class="pt-4">
+<h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] pb-2">Öğrenci Katılımı</h3>
+<div class="space-y-2">
+<div class="flex items-center gap-4 rounded-xl p-2 hover:bg-white/5">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-12 w-12" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDWw6Zgk0OAU7GQqoR0-q57EZ7olDTLEEffYR8GohGkUrq-q-vrWzFTngKTccYTmmLPsu05RMJ5mBlsasET-5j2I21CX0Fejgxu0HN5aJVzTwpyh1j5QxCvh9rV6pHmqUpEIshmuwRGT38lutxBcKuilWo2kbTp2xI66JxJHNvCJsns-k0mCX66BkG_tJ-KC8O8TSPuHqjQIlceV4ZWVDOW_phW96hyTG_ZXOwu9Ad3ZtR2gQFH3f7pCUwffaVI1GZviSi0KzqxeOw");'></div>
+<div class="flex-grow">
+<p class="text-white text-base font-medium leading-normal">Ahmet Yılmaz</p>
+<p class="text-[#96c5a9] text-sm font-normal leading-normal">10. Sınıf</p>
+</div>
+<input class="form-checkbox h-6 w-6 rounded-md bg-[#264532] border-none text-[#38e07b] focus:ring-2 focus:ring-[#38e07b] focus:ring-offset-0 focus:ring-offset-transparent" type="checkbox"/>
+</div>
+<div class="flex items-center gap-4 rounded-xl p-2 hover:bg-white/5">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-12 w-12" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAyOB5ilnaxgsMoKcQ6OA26cdX2kzi_T0qnPtjHvFIV2oKmSzJSN9ohn14nUHfoUmCATNy4mpYW-m2nfjkXPUNmkjh0XgZdQqTg45wrHbuiI0iC63DEFayxzQItbM1qhbreBf1EFU82HnFqG_kbfviggjdH97l5fwOGswRT2NIFHMHKmCO5-k_BeZSJSPi-LieFSwllRtycvKs4CDoiQKTevcNkqbmGOZ0DC_R3brTbcTAXsrlzcrNQrdiQI9Z-LoGS8NAhPYBj36k");'></div>
+<div class="flex-grow">
+<p class="text-white text-base font-medium leading-normal">Ayşe Kaya</p>
+<p class="text-[#96c5a9] text-sm font-normal leading-normal">11. Sınıf</p>
+</div>
+<input checked="" class="form-checkbox h-6 w-6 rounded-md bg-[#264532] border-none text-[#38e07b] focus:ring-2 focus:ring-[#38e07b] focus:ring-offset-0 focus:ring-offset-transparent" type="checkbox"/>
+</div>
+<div class="flex items-center gap-4 rounded-xl p-2 hover:bg-white/5">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-12 w-12" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCVT2On2M-eylU-6V4nk6uPMmq6Vr9zmW6rAmVwgB--DzVgQa1c18p6Bm4RoOg5sbBT4_scrbvUABDINVIbCsd5WHeASzGIt1-MaV89peTt1KU5zgj7LrX7DLPLZe42PqctX5uNEr3ANWOn7qMpehJVxcUFUH69BSWIvp_dwL6QNfEUu8RXK4zQ1H6e_KlwV_bTqC-bYLyNme_bonFl8ebp27myPXKMoV8v4rul_AjwAp9GpxS-s82GWjS2qDAeSOTLcR5skvzOTqc");'></div>
+<div class="flex-grow">
+<p class="text-white text-base font-medium leading-normal">Mehmet Demir</p>
+<p class="text-[#96c5a9] text-sm font-normal leading-normal">9. Sınıf</p>
+</div>
+<input class="form-checkbox h-6 w-6 rounded-md bg-[#264532] border-none text-[#38e07b] focus:ring-2 focus:ring-[#38e07b] focus:ring-offset-0 focus:ring-offset-transparent" type="checkbox"/>
+</div>
+</div>
+</div>
+</main>
+</div>
+<footer class="sticky bottom-0 bg-[#122118]/80 backdrop-blur-sm p-4 pt-2">
+<button class="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-5 bg-[#38e07b] text-[#122118] text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#32c96e] active:bg-[#2dad60]">
+<span class="truncate">Kaydet</span>
+</button>
+</footer>
+</div>
+
+</body></html>

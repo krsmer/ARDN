@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<style type="text/tailwindcss">
+        :root {
+            --primary-color: #38e07b;
+            --background-color: #121814;
+            --text-color: #ffffff;
+            --secondary-text-color: #a0a0a0;
+            --card-background-color: #1a221c;
+            --icon-background-color: #2a342c;
+        }
+        body {
+            font-family: 'Spline Sans', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[var(--background-color)]">
+<div class="relative flex size-full min-h-screen flex-col justify-between overflow-x-hidden">
+<main class="flex-grow">
+<header class="sticky top-0 z-10 bg-[var(--background-color)] bg-opacity-80 backdrop-blur-sm">
+<div class="flex items-center p-4">
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full">
+<span class="material-symbols-outlined text-white">arrow_back_ios_new</span>
+</button>
+<h1 class="flex-1 text-center text-xl font-bold text-white pr-10">Programlar</h1>
+</div>
+</header>
+<div class="px-4 pt-4">
+<h2 class="text-lg font-bold text-white">Aktif Programlar</h2>
+<div class="mt-2 space-y-3">
+<a class="flex items-center gap-4 rounded-xl bg-[var(--card-background-color)] p-4 transition-colors hover:bg-opacity-80" href="#">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[var(--icon-background-color)]">
+<span class="material-symbols-outlined text-white text-2xl">calendar_today</span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium text-white">Akademik Yıl 2023-2024</p>
+<p class="text-sm text-[var(--secondary-text-color)]">15 Eyl 2023 - 15 Haz 2024</p>
+</div>
+<span class="material-symbols-outlined text-[var(--secondary-text-color)]">chevron_right</span>
+</a>
+<a class="flex items-center gap-4 rounded-xl bg-[var(--card-background-color)] p-4 transition-colors hover:bg-opacity-80" href="#">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[var(--icon-background-color)]">
+<span class="material-symbols-outlined text-white text-2xl">calendar_today</span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium text-white">Akademik Yıl 2022-2023</p>
+<p class="text-sm text-[var(--secondary-text-color)]">15 Eyl 2022 - 15 Haz 2023</p>
+</div>
+<span class="material-symbols-outlined text-[var(--secondary-text-color)]">chevron_right</span>
+</a>
+</div>
+</div>
+<div class="px-4 pt-6">
+<h2 class="text-lg font-bold text-white">Pasif Programlar</h2>
+<div class="mt-2 space-y-3">
+<a class="flex items-center gap-4 rounded-xl bg-[var(--card-background-color)] p-4 transition-colors hover:bg-opacity-80" href="#">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[var(--icon-background-color)]">
+<span class="material-symbols-outlined text-white text-2xl">calendar_today</span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium text-white">Akademik Yıl 2021-2022</p>
+<p class="text-sm text-[var(--secondary-text-color)]">15 Eyl 2021 - 15 Haz 2022</p>
+</div>
+<span class="material-symbols-outlined text-[var(--secondary-text-color)]">chevron_right</span>
+</a>
+</div>
+</div>
+</main>
+<footer class="sticky bottom-0 p-4">
+<div class="flex justify-end">
+<button class="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--primary-color)] text-black shadow-lg transition-transform hover:scale-105 active:scale-95">
+<span class="material-symbols-outlined text-4xl">add</span>
+</button>
+</div>
+</footer>
+</div>
+
+</body></html>

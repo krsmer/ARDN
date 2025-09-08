@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Spline+Sans%3Awght%40400%3B500%3B700" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<title>Raporlar - Yatılı Öğrenci Takip Uygulaması</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+      :root {
+        --primary-color: #38e07b;
+        --background-color: #122118;
+        --surface-color: #1b3124;
+        --on-surface-color: #96c5a9;
+        --on-primary-color: #122118;
+        --text-color: #ffffff;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[var(--background-color)]">
+<div class="relative flex size-full min-h-screen flex-col dark justify-between group/design-root overflow-x-hidden" style="--select-button-svg: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724px%27 height=%2724px%27 fill=%27rgb(150,197,169)%27 viewBox=%270 0 256 256%27%3e%3cpath d=%27M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z%27%3e%3c/path%3e%3c/svg%3e'); font-family: &quot;Spline Sans&quot;, &quot;Noto Sans&quot;, sans-serif;">
+<div class="flex flex-col">
+<header class="sticky top-0 z-10 bg-[var(--background-color)]">
+<div class="flex items-center p-4 justify-between">
+<button class="text-white">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<h1 class="text-xl font-bold text-white flex-1 text-center">Raporlar</h1>
+<div class="w-8"></div> 
+</div>
+<nav class="flex border-b border-[#366348] px-4">
+<a class="flex flex-1 flex-col items-center justify-center border-b-2 border-b-[var(--primary-color)] text-white pb-3 pt-4" href="#">
+<p class="text-sm font-semibold">Katılım</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center border-b-2 border-b-transparent text-[var(--on-surface-color)] pb-3 pt-4" href="#">
+<p class="text-sm font-semibold">Devamsızlık</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center border-b-2 border-b-transparent text-[var(--on-surface-color)] pb-3 pt-4" href="#">
+<p class="text-sm font-semibold">Aktivite</p>
+</a>
+</nav>
+</header>
+<main class="p-4 space-y-6">
+<h2 class="text-white text-lg font-bold">Katılım Raporu Filtreleri</h2>
+<div class="space-y-4">
+<label class="flex flex-col">
+<span class="text-[var(--on-surface-color)] text-sm mb-2">Öğrenci Seçin</span>
+<select class="form-select w-full rounded-xl text-white focus:outline-0 focus:ring-2 focus:ring-[var(--primary-color)] border border-[#366348] bg-[var(--surface-color)] h-14 bg-[image:--select-button-svg] placeholder:text-[var(--on-surface-color)] p-4 text-base font-normal">
+<option selected="">Tüm Öğrenciler</option>
+<option value="student1">Ahmet Yılmaz</option>
+<option value="student2">Ayşe Kaya</option>
+</select>
+</label>
+<label class="flex flex-col">
+<span class="text-[var(--on-surface-color)] text-sm mb-2">Aktivite Türü</span>
+<select class="form-select w-full rounded-xl text-white focus:outline-0 focus:ring-2 focus:ring-[var(--primary-color)] border border-[#366348] bg-[var(--surface-color)] h-14 bg-[image:--select-button-svg] placeholder:text-[var(--on-surface-color)] p-4 text-base font-normal">
+<option selected="">Tüm Aktiviteler</option>
+<option value="etude">Etüt</option>
+<option value="sport">Spor</option>
+<option value="art">Sanat</option>
+</select>
+</label>
+<label class="flex flex-col">
+<span class="text-[var(--on-surface-color)] text-sm mb-2">Tarih Aralığı</span>
+<input class="form-input w-full rounded-xl text-white focus:outline-0 focus:ring-2 focus:ring-[var(--primary-color)] border border-[#366348] bg-[var(--surface-color)] h-14 placeholder:text-[var(--on-surface-color)] p-4 text-base font-normal" onblur="(this.type='text')" onfocus="(this.type='date')" placeholder="Tarih Seçin" type="text"/>
+</label>
+</div>
+<div class="bg-[var(--surface-color)] p-4 rounded-2xl">
+<h3 class="text-white text-base font-medium mb-4">Haftalık Katılım Oranları</h3>
+<div class="grid grid-cols-7 gap-3 items-end h-48">
+<div class="flex flex-col items-center gap-2">
+<div class="w-full bg-[#264532] rounded-full flex-grow flex items-end">
+<div class="w-full bg-[var(--primary-color)] rounded-full" style="height: 40%;"></div>
+</div>
+<p class="text-[var(--on-surface-color)] text-xs font-bold">Pzt</p>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-full bg-[#264532] rounded-full flex-grow flex items-end">
+<div class="w-full bg-[var(--primary-color)] rounded-full" style="height: 60%;"></div>
+</div>
+<p class="text-[var(--on-surface-color)] text-xs font-bold">Sal</p>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-full bg-[#264532] rounded-full flex-grow flex items-end">
+<div class="w-full bg-[var(--primary-color)] rounded-full" style="height: 95%;"></div>
+</div>
+<p class="text-[var(--on-surface-color)] text-xs font-bold">Çar</p>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-full bg-[#264532] rounded-full flex-grow flex items-end">
+<div class="w-full bg-[var(--primary-color)] rounded-full" style="height: 75%;"></div>
+</div>
+<p class="text-[var(--on-surface-color)] text-xs font-bold">Per</p>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-full bg-[#264532] rounded-full flex-grow flex items-end">
+<div class="w-full bg-[var(--primary-color)] rounded-full" style="height: 85%;"></div>
+</div>
+<p class="text-[var(--on-surface-color)] text-xs font-bold">Cum</p>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-full bg-[#264532] rounded-full flex-grow flex items-end">
+<div class="w-full bg-[var(--primary-color)] rounded-full" style="height: 50%;"></div>
+</div>
+<p class="text-[var(--on-surface-color)] text-xs font-bold">Cmt</p>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-full bg-[#264532] rounded-full flex-grow flex items-end">
+<div class="w-full bg-[var(--primary-color)] rounded-full" style="height: 30%;"></div>
+</div>
+<p class="text-[var(--on-surface-color)] text-xs font-bold">Paz</p>
+</div>
+</div>
+</div>
+<div class="flex gap-4">
+<button class="flex flex-1 items-center justify-center gap-2 rounded-full h-12 px-4 bg-[var(--surface-color)] text-white text-sm font-bold">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+<span class="truncate">PDF olarak Dışa Aktar</span>
+</button>
+<button class="flex flex-1 items-center justify-center gap-2 rounded-full h-12 px-4 bg-[var(--primary-color)] text-[var(--on-primary-color)] text-sm font-bold">
+<span class="material-symbols-outlined">description</span>
+<span class="truncate">Excel olarak Dışa Aktar</span>
+</button>
+</div>
+</main>
+</div>
+<footer class="sticky bottom-0 bg-[var(--surface-color)] border-t border-[#264532] pb-safe">
+<nav class="flex justify-around items-start pt-2 px-2">
+<a class="flex flex-col items-center justify-end gap-1 text-[var(--on-surface-color)] w-1/5" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<p class="text-xs font-medium">Programlar</p>
+</a>
+<a class="flex flex-col items-center justify-end gap-1 text-[var(--on-surface-color)] w-1/5" href="#">
+<span class="material-symbols-outlined">groups</span>
+<p class="text-xs font-medium">Öğrenciler</p>
+</a>
+<a class="flex flex-col items-center justify-end gap-1 text-[var(--on-surface-color)] w-1/5" href="#">
+<span class="material-symbols-outlined">local_activity</span>
+<p class="text-xs font-medium">Aktiviteler</p>
+</a>
+<a class="flex flex-col items-center justify-end gap-1 text-white w-1/5 pt-1 px-2 pb-2 rounded-full bg-[var(--primary-color)] -translate-y-4" href="#">
+<span class="material-symbols-outlined !text-[var(--on-primary-color)]">bar_chart</span>
+<p class="text-xs font-bold text-[var(--on-primary-color)]">Raporlar</p>
+</a>
+<a class="flex flex-col items-center justify-end gap-1 text-[var(--on-surface-color)] w-1/5" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-xs font-medium">Ayarlar</p>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>
