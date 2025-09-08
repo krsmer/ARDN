@@ -1,10 +1,13 @@
 'use client'
 
 import React from 'react'
+import { useSession, signOut } from 'next-auth/react'
 import { Header, BottomNavigation } from '../../components/ui/navigation'
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/card'
 
 export default function DashboardPage() {
+  const { data: session, status } = useSession()
+  
   const navigationItems = [
     { href: '/dashboard', icon: 'dashboard', label: 'Ana Sayfa', active: true },
     { href: '/programs', icon: 'calendar_month', label: 'Programlar', active: false },
@@ -13,14 +16,38 @@ export default function DashboardPage() {
     { href: '/reports', icon: 'bar_chart', label: 'Raporlar', active: false },
   ]
 
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-text-secondary">Yükleniyor...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!session) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-text-secondary">Giriş yapılmamış. Yönlendiriliyor...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-background pb-20">
       <Header 
         title="Dashboard"
         action={
-          <button className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface transition-colors">
+          <button 
+            onClick={() => signOut({ callbackUrl: '/login' })}
+            className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface transition-colors"
+          >
             <span className="material-symbols-outlined text-text-primary">
-              notifications
+              logout
             </span>
           </button>
         }
@@ -38,10 +65,13 @@ export default function DashboardPage() {
               </div>
               <div>
                 <h2 className="text-lg font-semibold text-text-primary">
-                  Hoşgeldiniz!
+                  Hoşgeldiniz, {session.user.name}!
                 </h2>
                 <p className="text-text-secondary">
-                  Öğrenci Yurt Takip Sistemine başarıyla giriş yaptınız.
+                  {session.user.organization.name} - {session.user.role}
+                </p>
+                <p className="text-sm text-primary">
+                  {session.user.email}
                 </p>
               </div>
             </div>

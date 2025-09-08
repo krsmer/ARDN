@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Spline_Sans } from "next/font/google";
+import { Providers } from "../components/providers";
 import "./globals.css";
 
 const splineSans = Spline_Sans({
@@ -11,7 +12,11 @@ const splineSans = Spline_Sans({
 export const metadata: Metadata = {
   title: "Öğrenci Takip Uygulaması",
   description: "Yatılı öğrenci kurumları için puan sistemli takip uygulaması",
-  viewport: "width=device-width, initial-scale=1",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -36,7 +41,9 @@ export default function RootLayout({
       <body
         className={`${splineSans.variable} font-sans antialiased bg-background text-text-primary min-h-screen`}
       >
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

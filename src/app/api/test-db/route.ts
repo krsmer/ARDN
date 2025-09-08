@@ -40,6 +40,18 @@ export async function POST() {
       })
     }
     
+    // Create test organization first
+    const testOrg = await prisma.organization.create({
+      data: {
+        name: 'Test Öğrenci Yurdu',
+        slug: 'test-yurdu',
+        address: 'Test Address',
+        phone: '+90 312 000 0000',
+        email: 'test@test.com',
+        isActive: true
+      }
+    })
+    
     // Create test user
     const testUser = await prisma.user.create({
       data: {
@@ -47,6 +59,7 @@ export async function POST() {
         passwordHash: hashedPassword,
         name: 'Test Öğretmen',
         role: 'TEACHER',
+        organizationId: testOrg.id,
         isActive: true
       }
     })
@@ -58,6 +71,7 @@ export async function POST() {
         description: 'Test akademik yıl programı',
         startDate: new Date('2024-09-01'),
         endDate: new Date('2025-06-15'),
+        organizationId: testOrg.id,
         isActive: true,
         createdById: testUser.id
       }
@@ -78,6 +92,7 @@ export async function POST() {
           studentNumber: '2024001',
           name: 'Ahmet Yılmaz',
           class: '10-A',
+          organizationId: testOrg.id,
           programId: testProgram.id,
           totalPoints: 1250
         }
@@ -87,6 +102,7 @@ export async function POST() {
           studentNumber: '2024002',
           name: 'Ayşe Kaya',
           class: '10-A',
+          organizationId: testOrg.id,
           programId: testProgram.id,
           totalPoints: 1150
         }
@@ -96,6 +112,7 @@ export async function POST() {
           studentNumber: '2024003',
           name: 'Mehmet Demir',
           class: '10-B',
+          organizationId: testOrg.id,
           programId: testProgram.id,
           totalPoints: 980
         }
@@ -111,6 +128,7 @@ export async function POST() {
         startTime: new Date('2024-09-08T05:30:00'),
         endTime: new Date('2024-09-08T06:00:00'),
         points: 30,
+        organizationId: testOrg.id,
         programId: testProgram.id,
         createdById: testUser.id,
         isRecurring: true,
