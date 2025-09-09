@@ -127,7 +127,7 @@ export default function RegisterPage() {
               {/* Organization Information */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-text-primary border-b border-border pb-2">
-                  🏢 Yurt Bilgileri
+                   Yurt Bilgileri
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -206,7 +206,7 @@ export default function RegisterPage() {
               {/* Admin User Information */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-text-primary border-b border-border pb-2">
-                  👤 Yönetici Hesabı
+                   Yönetici Hesabı
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
