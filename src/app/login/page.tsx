@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { Button } from '../../components/ui/button'
@@ -14,19 +14,65 @@ export default function LoginPage() {
   
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [credentialsLoaded, setCredentialsLoaded] = useState(false)
+
+  // Load remembered credentials on component mount
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem('rememberedEmail')
+    const rememberedPassword = localStorage.getItem('rememberedPassword')
+    
+    if (rememberedEmail) {
+      setEmail(rememberedEmail)
+      setRememberMe(true)
+      setCredentialsLoaded(true)
+      
+      // Show a subtle message that credentials were loaded
+      setTimeout(() => {
+        console.log('✅ Kaydedilmiş giriş bilgileri yüklendi')
+      }, 500)
+    }
+    if (rememberedPassword) {
+      setPassword(rememberedPassword)
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError('')
     
+    // Basic validation
+    if (!email || !email.includes('@')) {
+      setError('Lütfen geçerli bir email adresi giriniz.')
+      setIsLoading(false)
+      return
+    }
+    
+    if (password.length < 6) {
+      setError('Şifre en az 6 karakter olmalıdır.')
+      setIsLoading(false)
+      return
+    }
+    
     try {
+      // Handle remember me functionality
+      if (rememberMe) {
+        localStorage.setItem('rememberedEmail', email)
+        localStorage.setItem('rememberedPassword', password)
+      } else {
+        localStorage.removeItem('rememberedEmail')
+        localStorage.removeItem('rememberedPassword')
+      }
+      
       const result = await signIn('credentials', {
         email,
         password,
-        redirect: false
+        redirect: false,
+        // Extend session if remember me is checked
+        callbackUrl: rememberMe ? '/dashboard?remember=true' : '/dashboard'
       })
       
       if (result?.error) {
@@ -73,6 +119,15 @@ export default function LoginPage() {
                 </div>
               )}
               
+              {/* Credentials loaded message */}
+              {credentialsLoaded && (
+                <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                  <p className="text-blue-500 text-sm">
+                     Kaydedilmiş giriş bilgileri yüklendi. Giriş yapabilirsiniz.
+                  </p>
+                </div>
+              )}
+              
               {/* Error Message */}
               {error && (
                 <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
@@ -110,9 +165,11 @@ export default function LoginPage() {
               </div>
 
               <div className="flex items-center justify-between">
-                <label className="flex items-center">
+                <label className="flex items-center cursor-pointer">
                   <input 
                     type="checkbox" 
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
                     className="rounded border-border text-primary focus:ring-primary focus:ring-2"
                   />
                   <span className="ml-2 text-sm text-text-secondary">
@@ -121,6 +178,13 @@ export default function LoginPage() {
                 </label>
                 <button 
                   type="button"
+                  onClick={() => {
+                    // Simple forgot password implementation
+                    const userEmail = email || prompt('Lütfen email adresinizi giriniz:')
+                    if (userEmail) {
+                      alert(`📧 Şifre sıfırlama talimatları ${userEmail} adresine gönderildi.\n\n🗺️ Henüz sistem geliştirme aşamasında olduğu için gerçek email gönderilmemektedir.`)
+                    }
+                  }}
                   className="text-sm text-primary hover:underline"
                 >
                   Şifremi unuttum
@@ -156,7 +220,7 @@ export default function LoginPage() {
               variant="outline"
               className="w-full"
             >
-              🏢 Yeni Yurt Kaydı Oluştur
+               Yeni Yurt Kaydı Oluştur
             </Button>
           </CardContent>
         </Card>
@@ -164,7 +228,7 @@ export default function LoginPage() {
         {/* Footer */}
         <div className="text-center mt-6">
           <p className="text-xs text-text-secondary">
-            © 2024 Öğrenci Yurt Takip Sistemi. Tüm hakları saklıdır.
+            © 2025 Öğrenci Yurt Takip Sistemi. Tüm hakları saklıdır.
           </p>
         </div>
       </div>

@@ -55,7 +55,6 @@ async function main() {
       }
     })
 
-    console.log('✅ Teacher-program relationship created')
 
     // Create test students
     const students = [
@@ -84,8 +83,6 @@ async function main() {
         data: student
       })
     }
-
-    console.log('✅ Test students created')
 
     // Create test activity
     const testActivity = await prisma.activity.create({

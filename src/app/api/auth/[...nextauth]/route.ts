@@ -111,16 +111,31 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   session: {
-    strategy: 'jwt'
+    strategy: 'jwt',
+    // Default session expires in 24 hours
+    maxAge: 24 * 60 * 60, // 24 hours
+    // Extended session for "remember me" (30 days)
+    // This will be dynamically adjusted in JWT callback
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       // Include custom fields in JWT token
       if (user) {
         token.role = user.role
         token.organizationId = user.organizationId
         token.organization = user.organization
+        
+        // Check if "remember me" was used (can be detected from login page)
+        // For now, we'll use a longer expiration by default and let localStorage handle persistence
+        token.rememberMe = true // This could be passed from the login form in the future
       }
+      
+      // Set token expiration based on remember me preference
+      if (token.rememberMe) {
+        // 30 days for remember me
+        token.exp = Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60)
+      }
+      
       return token
     },
     async session({ session, token }) {

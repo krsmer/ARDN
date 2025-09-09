@@ -20,6 +20,8 @@ export default function RegisterPage() {
   const [adminName, setAdminName] = useState('')
   const [adminEmail, setAdminEmail] = useState('')
   const [adminPassword, setAdminPassword] = useState('')
+  const [adminPasswordConfirm, setAdminPasswordConfirm] = useState('')
+  const [acceptTerms, setAcceptTerms] = useState(false)
   
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -51,6 +53,25 @@ export default function RegisterPage() {
     setIsLoading(true)
     setError('')
     setSuccess('')
+    
+    // Client-side validation
+    if (adminPassword !== adminPasswordConfirm) {
+      setError('Şifreler eşleşmiyor. Lütfen tekrar kontrol edin.')
+      setIsLoading(false)
+      return
+    }
+    
+    if (adminPassword.length < 6) {
+      setError('Şifre en az 6 karakter olmalıdır.')
+      setIsLoading(false)
+      return
+    }
+    
+    if (!acceptTerms) {
+      setError('Devam etmek için kullanım koşullarını kabul etmelisiniz.')
+      setIsLoading(false)
+      return
+    }
     
     try {
       const response = await fetch('/api/auth/register', {
@@ -238,7 +259,7 @@ export default function RegisterPage() {
                     />
                   </div>
                   
-                  <div className="md:col-span-2">
+                  <div>
                     <label htmlFor="adminPassword" className="block text-sm font-medium text-text-primary mb-2">
                       Şifre * (en az 6 karakter)
                     </label>
@@ -252,13 +273,57 @@ export default function RegisterPage() {
                       minLength={6}
                     />
                   </div>
+                  
+                  <div>
+                    <label htmlFor="adminPasswordConfirm" className="block text-sm font-medium text-text-primary mb-2">
+                      Şifre Tekrar * (Şifrenizi doğrulayın)
+                    </label>
+                    <Input
+                      id="adminPasswordConfirm"
+                      type="password"
+                      placeholder="••••••••"
+                      value={adminPasswordConfirm}
+                      onChange={(e) => setAdminPasswordConfirm(e.target.value)}
+                      required
+                      minLength={6}
+                      className={adminPassword && adminPasswordConfirm && adminPassword !== adminPasswordConfirm ? 'border-red-500' : ''}
+                    />
+                    {adminPassword && adminPasswordConfirm && adminPassword !== adminPasswordConfirm && (
+                      <p className="text-red-500 text-xs mt-1">
+                        ⚠️ Şifreler eşleşmiyor
+                      </p>
+                    )}
+                    {adminPassword && adminPasswordConfirm && adminPassword === adminPasswordConfirm && (
+                      <p className="text-green-500 text-xs mt-1">
+                        ✅ Şifreler eşleşiyor
+                      </p>
+                    )}
+                  </div>
                 </div>
+              </div>
+
+              {/* Terms and Conditions */}
+              <div className="flex items-start gap-3 p-4 bg-surface rounded-lg">
+                <input
+                  type="checkbox"
+                  id="acceptTerms"
+                  checked={acceptTerms}
+                  onChange={(e) => setAcceptTerms(e.target.checked)}
+                  className="mt-1 rounded border-border text-primary focus:ring-primary focus:ring-2"
+                  required
+                />
+                <label htmlFor="acceptTerms" className="text-sm text-text-secondary cursor-pointer">
+                  <span className="text-text-primary font-medium">Kullanım Koşullarını kabul ediyorum.</span>
+                  <br />
+                  Kayıt olarak ARDN Öğrenci Takip Sistemi’nin kullanım koşullarını, 
+                  gizlilik politikasını ve veri işleme yöntemlerini kabul etmiş olursunuz.
+                </label>
               </div>
 
               <Button 
                 type="submit" 
                 className="w-full" 
-                disabled={isLoading || !organizationName || !organizationSlug || !adminName || !adminEmail || !adminPassword}
+                disabled={isLoading || !organizationName || !organizationSlug || !adminName || !adminEmail || !adminPassword || !adminPasswordConfirm || !acceptTerms || adminPassword !== adminPasswordConfirm}
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
@@ -266,7 +331,7 @@ export default function RegisterPage() {
                     Yurt kaydı oluşturuluyor...
                   </div>
                 ) : (
-                  '🏢 Yurt Kaydı Oluştur'
+                  ' Yurt Kaydı Oluştur'
                 )}
               </Button>
             </form>
@@ -285,7 +350,7 @@ export default function RegisterPage() {
             </button>
           </p>
           <p className="text-xs text-text-secondary">
-            © 2024 ARDN Öğrenci Yurt Takip Sistemi. Tüm hakları saklıdır.
+            © 2025 ARDN Öğrenci Yurt Takip Sistemi. Tüm hakları saklıdır.
           </p>
         </div>
       </div>
