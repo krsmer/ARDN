@@ -164,7 +164,7 @@ export async function GET(request: NextRequest) {
     const programId = searchParams.get('programId')
 
     // Build where clause with organization filter
-    let whereClause: any = {
+    const whereClause: Record<string, unknown> = {
       student: {
         organizationId: session.user.organizationId
       }

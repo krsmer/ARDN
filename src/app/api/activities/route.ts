@@ -281,7 +281,7 @@ export async function POST(request: NextRequest) {
       )
       
       // Handle auto-inclusion of students if requested
-      let autoInclusionResults = []
+      const autoInclusionResults = []
       if (autoIncludeAllStudents) {
         for (const activity of activities) {
           const inclusionResult = await autoIncludeStudentsInActivity(
