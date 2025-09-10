@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 
+// Production build configuration - seed file removed
 const nextConfig: NextConfig = {
   serverExternalPackages: ['@prisma/client', 'bcryptjs'],
   typescript: {
