@@ -25,6 +25,9 @@ export default function ProgramsPage() {
   const [loading, setLoading] = useState(true)
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [programToDelete, setProgramToDelete] = useState<Program | null>(null)
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   
   const navigationItems = [
     { href: '/dashboard', icon: 'dashboard', label: 'Ana Sayfa', active: false },
@@ -46,6 +49,18 @@ export default function ProgramsPage() {
     }
   }, [session])
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setOpenMenuId(null)
+    }
+    
+    if (openMenuId) {
+      document.addEventListener('click', handleClickOutside)
+      return () => document.removeEventListener('click', handleClickOutside)
+    }
+  }, [openMenuId])
+
   const fetchPrograms = async () => {
     try {
       const response = await fetch('/api/programs')
@@ -57,6 +72,25 @@ export default function ProgramsPage() {
       console.error('Error fetching programs:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleDeleteProgram = async (program: Program) => {
+    try {
+      const response = await fetch(`/api/programs?id=${program.id}`, {
+        method: 'DELETE'
+      })
+      
+      if (response.ok) {
+        setPrograms(programs.filter(p => p.id !== program.id))
+        setShowDeleteModal(false)
+        setProgramToDelete(null)
+      } else {
+        const errorData = await response.json()
+        alert(errorData.message || 'Dönem silinemedi')
+      }
+    } catch (error) {
+      alert('Bir hata oluştu')
     }
   }
 
@@ -179,11 +213,35 @@ export default function ProgramsPage() {
                       </div>
                     </div>
                     
-                    <button className="p-2 hover:bg-surface rounded-full transition-colors">
-                      <span className="material-symbols-outlined text-text-secondary">
-                        more_vert
-                      </span>
-                    </button>
+                    <div className="relative">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setOpenMenuId(openMenuId === program.id ? null : program.id)
+                        }}
+                        className="p-2 hover:bg-surface rounded-full transition-colors"
+                      >
+                        <span className="material-symbols-outlined text-text-secondary">
+                          more_vert
+                        </span>
+                      </button>
+                      
+                      {openMenuId === program.id && (
+                        <div className="absolute right-0 top-full mt-1 bg-surface border border-border rounded-lg shadow-lg z-10 min-w-[120px]">
+                          <button
+                            onClick={() => {
+                              setProgramToDelete(program)
+                              setShowDeleteModal(true)
+                              setOpenMenuId(null)
+                            }}
+                            className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2"
+                          >
+                            <span className="material-symbols-outlined text-sm">delete</span>
+                            Sil
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -201,6 +259,47 @@ export default function ProgramsPage() {
             fetchPrograms()
           }}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && programToDelete && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg w-full max-w-md p-6">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="material-symbols-outlined text-red-600">warning</span>
+              </div>
+              
+              <h3 className="text-lg font-semibold text-text-primary mb-2">
+                Dönemi Sil
+              </h3>
+              
+              <p className="text-text-secondary mb-6">
+                <strong>{programToDelete.name}</strong> dönemini silmek istediğinizden emin misiniz?
+                <br /><br />
+                Bu işlem geri alınamaz ve döneme ait tüm öğrenciler ve aktiviteler de silinecektir.
+              </p>
+              
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowDeleteModal(false)
+                    setProgramToDelete(null)
+                  }}
+                  className="flex-1 px-4 py-2 border border-border rounded-lg text-text-secondary hover:bg-surface transition-colors"
+                >
+                  İptal
+                </button>
+                <button
+                  onClick={() => handleDeleteProgram(programToDelete)}
+                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Sil
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       <BottomNavigation items={navigationItems} />

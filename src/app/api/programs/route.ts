@@ -250,3 +250,75 @@ export async function PUT(request: NextRequest) {
     }, { status: 500 })
   }
 }
+
+// DELETE /api/programs - Delete a program
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+    
+    if (!session?.user?.organizationId) {
+      return NextResponse.json({
+        success: false,
+        message: 'Unauthorized'
+      }, { status: 401 })
+    }
+
+    const { searchParams } = new URL(request.url)
+    const programId = searchParams.get('id')
+
+    if (!programId) {
+      return NextResponse.json({
+        success: false,
+        message: 'Dönem ID gereklidir'
+      }, { status: 400 })
+    }
+
+    // Verify the program belongs to the user's organization
+    const existingProgram = await prisma.program.findFirst({
+      where: {
+        id: programId,
+        organizationId: session.user.organizationId
+      },
+      include: {
+        _count: {
+          select: {
+            students: true,
+            activities: true
+          }
+        }
+      }
+    })
+
+    if (!existingProgram) {
+      return NextResponse.json({
+        success: false,
+        message: 'Dönem bulunamadı'
+      }, { status: 404 })
+    }
+
+    // Check if program has associated data
+    if (existingProgram._count.students > 0 || existingProgram._count.activities > 0) {
+      return NextResponse.json({
+        success: false,
+        message: `Bu dönem silinemez. ${existingProgram._count.students} öğrenci ve ${existingProgram._count.activities} aktivite ile ilişkili.`
+      }, { status: 400 })
+    }
+
+    // Delete the program
+    await prisma.program.delete({
+      where: { id: programId }
+    })
+
+    return NextResponse.json({
+      success: true,
+      message: 'Dönem başarıyla silindi'
+    })
+
+  } catch (error) {
+    console.error('Error deleting program:', error)
+    return NextResponse.json({
+      success: false,
+      message: 'Dönem silinirken hata oluştu'
+    }, { status: 500 })
+  }
+}
