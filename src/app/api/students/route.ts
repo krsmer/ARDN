@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     if (!name || !studentNumber || !studentClass || !programId) {
       return NextResponse.json({
         success: false,
-        message: 'Öğrenci adı, numarası, sınıfı ve program seçimi gereklidir'
+        message: 'Öğrenci adı, numarası, sınıfı ve dönem seçimi gereklidir'
       }, { status: 400 })
     }
 
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
     if (!program) {
       return NextResponse.json({
         success: false,
-        message: 'Seçilen program bulunamadı'
+        message: 'Seçilen dönem bulunamadı'
       }, { status: 404 })
     }
 
@@ -232,7 +232,7 @@ export async function PUT(request: NextRequest) {
       if (!program) {
         return NextResponse.json({
           success: false,
-          message: 'Seçilen program bulunamadı'
+          message: 'Seçilen dönem bulunamadı'
         }, { status: 404 })
       }
     }

@@ -28,7 +28,7 @@ export default function ProgramsPage() {
   
   const navigationItems = [
     { href: '/dashboard', icon: 'dashboard', label: 'Ana Sayfa', active: false },
-    { href: '/programs', icon: 'calendar_month', label: 'Programlar', active: true },
+    { href: '/programs', icon: 'calendar_month', label: 'Dönemler', active: true },
     { href: '/students', icon: 'groups', label: 'Öğrenciler', active: false },
     { href: '/activities', icon: 'local_activity', label: 'Aktiviteler', active: false },
     { href: '/reports', icon: 'bar_chart', label: 'Raporlar', active: false },
@@ -83,7 +83,7 @@ export default function ProgramsPage() {
   return (
     <div className="min-h-screen bg-background pb-20">
       <Header 
-        title="Programlar"
+        title="Dönemler"
         action={
           <button 
             onClick={() => setShowCreateForm(true)}
@@ -101,7 +101,7 @@ export default function ProgramsPage() {
         <div className="relative">
           <input
             type="text"
-            placeholder="Program ara..."
+            placeholder="Dönem ara..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -123,17 +123,17 @@ export default function ProgramsPage() {
                 calendar_month
               </span>
               <h3 className="text-lg font-medium text-text-primary mb-2">
-                {searchTerm ? 'Program bulunamadı' : 'Henüz program yok'}
+                {searchTerm ? 'Dönem bulunamadı' : 'Henüz dönem yok'}
               </h3>
               <p className="text-text-secondary mb-4">
-                {searchTerm ? 'Arama kriterlerinizi değiştirip tekrar deneyin.' : 'İlk programınızı oluşturmak için + butonuna tıklayın.'}
+                {searchTerm ? 'Arama kriterlerinizi değiştirip tekrar deneyin.' : 'İlk döneminizi oluşturmak için + butonuna tıklayın.'}
               </p>
               {!searchTerm && (
                 <button
                   onClick={() => setShowCreateForm(true)}
                   className="px-4 py-2 bg-primary text-background rounded-lg hover:bg-primary/90 transition-colors"
                 >
-                  Program Oluştur
+                  Dönem Oluştur
                 </button>
               )}
             </CardContent>
@@ -234,7 +234,7 @@ function CreateProgramModal({ onClose, onSuccess }: CreateProgramModalProps) {
     const newErrors: Record<string, string> = {}
     
     if (!formData.name.trim()) {
-      newErrors.name = 'Program adı gerekli'
+      newErrors.name = 'Dönem adı gerekli'
     }
     
     if (!formData.startDate) {
@@ -271,7 +271,7 @@ function CreateProgramModal({ onClose, onSuccess }: CreateProgramModalProps) {
         onSuccess()
       } else {
         const errorData = await response.json()
-        setErrors({ general: errorData.message || 'Program oluşturulamadı' })
+        setErrors({ general: errorData.message || 'Dönem oluşturulamadı' })
       }
     } catch (error) {
       setErrors({ general: 'Bir hata oluştu' })
@@ -285,7 +285,7 @@ function CreateProgramModal({ onClose, onSuccess }: CreateProgramModalProps) {
       <div className="bg-background rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-text-primary">Yeni Program</h2>
+            <h2 className="text-xl font-semibold text-text-primary">Yeni Dönem</h2>
             <button
               onClick={onClose}
               className="p-2 hover:bg-surface rounded-full transition-colors"
@@ -303,7 +303,7 @@ function CreateProgramModal({ onClose, onSuccess }: CreateProgramModalProps) {
             
             <div>
               <label className=" text-sm font-medium text-text-primary mb-2">
-                Program Adı *
+                Dönem Adı *
               </label>
               <input
                 type="text"
@@ -328,7 +328,7 @@ function CreateProgramModal({ onClose, onSuccess }: CreateProgramModalProps) {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className="w-full text-gray-700 px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 rows={3}
-                placeholder="Program hakkında kısa açıklama..."
+                placeholder="Dönem hakkında kısa açıklama..."
               />
             </div>
             
@@ -382,7 +382,7 @@ function CreateProgramModal({ onClose, onSuccess }: CreateProgramModalProps) {
                 disabled={loading}
                 className="flex-1 px-4 py-2 bg-primary text-background rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
-                {loading ? 'Oluşturuluyor...' : 'Program Oluştur'}
+                {loading ? 'Oluşturuluyor...' : 'Dönem Oluştur'}
               </button>
             </div>
           </form>

@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
     console.error('Error fetching programs:', error)
     return NextResponse.json({
       success: false,
-      message: 'Programlar yüklenirken hata oluştu'
+      message: 'Dönemler yüklenirken hata oluştu'
     }, { status: 500 })
   }
 }
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     if (!name || !startDate || !endDate) {
       return NextResponse.json({
         success: false,
-        message: 'Program adı, başlangıç ve bitiş tarihleri gereklidir'
+        message: 'Dönem adı, başlangıç ve bitiş tarihleri gereklidir'
       }, { status: 400 })
     }
 
@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Program başarıyla oluşturuldu',
+      message: 'Dönem başarıyla oluşturuldu',
       program: {
         id: program.id,
         name: program.name,
@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
     console.error('Error creating program:', error)
     return NextResponse.json({
       success: false,
-      message: 'Program oluşturulurken hata oluştu'
+      message: 'Dönem oluşturulurken hata oluştu'
     }, { status: 500 })
   }
 }
@@ -174,7 +174,7 @@ export async function PUT(request: NextRequest) {
     if (!id) {
       return NextResponse.json({
         success: false,
-        message: 'Program ID gereklidir'
+        message: 'Dönem ID gereklidir'
       }, { status: 400 })
     }
 
@@ -189,7 +189,7 @@ export async function PUT(request: NextRequest) {
     if (!existingProgram) {
       return NextResponse.json({
         success: false,
-        message: 'Program bulunamadı'
+        message: 'Dönem bulunamadı'
       }, { status: 404 })
     }
 
@@ -228,7 +228,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Program başarıyla güncellendi',
+      message: 'Dönem başarıyla güncellendi',
       program: {
         id: updatedProgram.id,
         name: updatedProgram.name,
@@ -246,7 +246,7 @@ export async function PUT(request: NextRequest) {
     console.error('Error updating program:', error)
     return NextResponse.json({
       success: false,
-      message: 'Program güncellenirken hata oluştu'
+      message: 'Dönem güncellenirken hata oluştu'
     }, { status: 500 })
   }
 }

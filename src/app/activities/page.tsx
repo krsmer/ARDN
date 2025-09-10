@@ -46,7 +46,7 @@ export default function ActivitiesPage() {
   
   const navigationItems = [
     { href: '/dashboard', icon: 'dashboard', label: 'Ana Sayfa', active: false },
-    { href: '/programs', icon: 'calendar_month', label: 'Programlar', active: false },
+    { href: '/programs', icon: 'calendar_month', label: 'Dönemler', active: false },
     { href: '/students', icon: 'groups', label: 'Öğrenciler', active: false },
     { href: '/activities', icon: 'local_activity', label: 'Aktiviteler', active: true },
     { href: '/reports', icon: 'bar_chart', label: 'Raporlar', active: false },
@@ -231,7 +231,7 @@ export default function ActivitiesPage() {
             onChange={(e) => setSelectedProgram(e.target.value)}
             className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           >
-            <option value="all">Tüm Programlar</option>
+            <option value="all">Tüm Dönemler</option>
             {programs.filter(p => p.isActive).map((program) => (
               <option key={program.id} value={program.id}>
                 {program.name}
@@ -541,7 +541,7 @@ function CreateActivityModal({ programs, onClose, onSuccess }: CreateActivityMod
     }
     
     if (!formData.programId) {
-      newErrors.programId = 'Program seçimi gerekli'
+      newErrors.programId = 'Dönem seçimi gerekli'
     }
     
     if (formData.endTime && formData.startTime) {
@@ -677,7 +677,7 @@ function CreateActivityModal({ programs, onClose, onSuccess }: CreateActivityMod
 
             <div>
               <label className="block text-sm font-medium text-text-primary mb-2">
-                Program *
+                Dönem *
               </label>
               <select
                 value={formData.programId}
@@ -686,7 +686,7 @@ function CreateActivityModal({ programs, onClose, onSuccess }: CreateActivityMod
                   errors.programId ? 'border-red-300' : 'border-border'
                 }`}
               >
-                <option value="">Program seçin</option>
+                <option value="">Dönem seçin</option>
                 {programs.map((program) => (
                   <option key={program.id} value={program.id}>
                     {program.name}

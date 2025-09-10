@@ -50,7 +50,7 @@ export default function ReportsPage() {
   
   const navigationItems = [
     { href: '/dashboard', icon: 'dashboard', label: 'Ana Sayfa', active: false },
-    { href: '/programs', icon: 'calendar_month', label: 'Programlar', active: false },
+    { href: '/programs', icon: 'calendar_month', label: 'Dönemler', active: false },
     { href: '/students', icon: 'groups', label: 'Öğrenciler', active: false },
     { href: '/activities', icon: 'local_activity', label: 'Aktiviteler', active: false },
     { href: '/reports', icon: 'bar_chart', label: 'Raporlar', active: true },

@@ -37,7 +37,7 @@ export default function StudentsPage() {
   
   const navigationItems = [
     { href: '/dashboard', icon: 'dashboard', label: 'Ana Sayfa', active: false },
-    { href: '/programs', icon: 'calendar_month', label: 'Programlar', active: false },
+    { href: '/programs', icon: 'calendar_month', label: 'Dönemler', active: false },
     { href: '/students', icon: 'groups', label: 'Öğrenciler', active: true },
     { href: '/activities', icon: 'local_activity', label: 'Aktiviteler', active: false },
     { href: '/reports', icon: 'bar_chart', label: 'Raporlar', active: false },
@@ -469,7 +469,7 @@ function CreateStudentModal({ programs, onClose, onSuccess }: CreateStudentModal
             
             <div>
               <label className="block text-sm font-medium text-text-primary mb-2">
-                Program *
+                Dönem *
               </label>
               <select
                 value={formData.programId}
@@ -478,7 +478,7 @@ function CreateStudentModal({ programs, onClose, onSuccess }: CreateStudentModal
                   errors.programId ? 'border-red-300' : 'border-border'
                 }`}
               >
-                <option value="">Program seçin</option>
+                <option value="">Dönem seçin</option>
                 {programs.map((program) => (
                   <option key={program.id} value={program.id}>
                     {program.name}

@@ -189,7 +189,7 @@ export async function POST(request: NextRequest) {
     if (!title || !activityDate || !startTime || !points || !programId) {
       return NextResponse.json({
         success: false,
-        message: 'Başlık, tarih, saat, puan ve program seçimi gereklidir'
+        message: 'Başlık, tarih, saat, puan ve dönem seçimi gereklidir'
       }, { status: 400 })
     }
 
@@ -212,7 +212,7 @@ export async function POST(request: NextRequest) {
     if (!program) {
       return NextResponse.json({
         success: false,
-        message: 'Seçilen program bulunamadı'
+        message: 'Seçilen dönem bulunamadı'
       }, { status: 404 })
     }
 

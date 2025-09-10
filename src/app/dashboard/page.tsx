@@ -55,7 +55,7 @@ export default function DashboardPage() {
   
   const navigationItems = [
     { href: '/dashboard', icon: 'dashboard', label: 'Ana Sayfa', active: true },
-    { href: '/programs', icon: 'calendar_month', label: 'Programlar', active: false },
+    { href: '/programs', icon: 'calendar_month', label: 'Dönemler', active: false },
     { href: '/students', icon: 'groups', label: 'Öğrenciler', active: false },
     { href: '/activities', icon: 'local_activity', label: 'Aktiviteler', active: false },
     { href: '/reports', icon: 'bar_chart', label: 'Raporlar', active: false },
@@ -141,7 +141,7 @@ export default function DashboardPage() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-text-secondary">
-                Aktif Program
+                Aktif Dönem
               </CardTitle>
             </CardHeader>
             <CardContent>
