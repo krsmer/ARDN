@@ -5,6 +5,9 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Header, BottomNavigation } from '../../components/ui/navigation'
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/card'
+import * as XLSX from 'xlsx'
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
 
 interface Student {
   id: string
@@ -177,13 +180,128 @@ export default function ReportsPage() {
   const uniqueClasses = [...new Set(students.map(s => s.class))].sort()
 
   const exportToExcel = () => {
-    // TODO: Implement Excel export functionality
-    alert('Excel export functionality will be implemented')
+    try {
+      let data: any[] = []
+      let filename = ''
+      let headers: string[] = []
+
+      if (activeTab === 'participation') {
+        filename = 'katilim-raporu'
+        headers = ['Tarih', 'Katılım Oranı (%)', 'Toplam Aktivite', 'Toplam Katılım']
+        data = participationData.map(item => ([
+          item.date,
+          item.participationRate,
+          item.totalActivities,
+          item.totalParticipations
+        ]))
+      } else if (activeTab === 'attendance') {
+        filename = 'devamsizlik-raporu'
+        headers = ['Öğrenci No', 'Ad Soyad', 'Sınıf', 'Toplam Puan', 'Program']
+        data = filteredStudents.map(student => ([
+          student.studentNumber,
+          student.name,
+          student.class,
+          student.totalPoints,
+          student.programName
+        ]))
+      } else if (activeTab === 'leaderboard') {
+        filename = 'liderlik-tablosu'
+        headers = ['Sıra', 'Öğrenci No', 'Ad Soyad', 'Sınıf', 'Toplam Puan', 'Program']
+        data = filteredStudents.map((student, index) => ([
+          index + 1,
+          student.studentNumber,
+          student.name,
+          student.class,
+          student.totalPoints,
+          student.programName
+        ]))
+      }
+
+      const ws = XLSX.utils.aoa_to_sheet([headers, ...data])
+      const wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, ws, 'Rapor')
+      
+      const today = new Date().toISOString().split('T')[0]
+      XLSX.writeFile(wb, `${filename}-${today}.xlsx`)
+    } catch (error) {
+      console.error('Excel export error:', error)
+      alert('Excel dosyası oluşturulurken bir hata oluştu.')
+    }
   }
 
   const exportToPDF = () => {
-    // TODO: Implement PDF export functionality
-    alert('PDF export functionality will be implemented')
+    try {
+      const doc = new jsPDF()
+      
+      // Set Turkish font support
+      doc.setFont('helvetica')
+      
+      let title = ''
+      let headers: string[][] = []
+      let data: any[][] = []
+
+      if (activeTab === 'participation') {
+        title = 'Katılım Raporu'
+        headers = [['Tarih', 'Katılım Oranı (%)', 'Toplam Aktivite', 'Toplam Katılım']]
+        data = participationData.map(item => ([
+          item.date,
+          item.participationRate.toString(),
+          item.totalActivities.toString(),
+          item.totalParticipations.toString()
+        ]))
+      } else if (activeTab === 'attendance') {
+        title = 'Devamsızlık Raporu'
+        headers = [['Öğrenci No', 'Ad Soyad', 'Sınıf', 'Toplam Puan', 'Program']]
+        data = filteredStudents.map(student => ([
+          student.studentNumber,
+          student.name,
+          student.class,
+          student.totalPoints.toString(),
+          student.programName
+        ]))
+      } else if (activeTab === 'leaderboard') {
+        title = 'Liderlik Tablosu'
+        headers = [['Sıra', 'Öğrenci No', 'Ad Soyad', 'Sınıf', 'Toplam Puan', 'Program']]
+        data = filteredStudents.map((student, index) => ([
+          (index + 1).toString(),
+          student.studentNumber,
+          student.name,
+          student.class,
+          student.totalPoints.toString(),
+          student.programName
+        ]))
+      }
+
+      // Add title
+      doc.setFontSize(16)
+      doc.text(title, 14, 20)
+      
+      // Add date
+      const today = new Date().toLocaleDateString('tr-TR')
+      doc.setFontSize(10)
+      doc.text(`Rapor Tarihi: ${today}`, 14, 30)
+
+      // Add table
+      ;(doc as any).autoTable({
+        head: headers,
+        body: data,
+        startY: 40,
+        styles: {
+          fontSize: 8,
+          cellPadding: 2
+        },
+        headStyles: {
+          fillColor: [59, 130, 246], // Blue color
+          textColor: 255
+        }
+      })
+      
+      const filename = `${title.toLowerCase().replace(/\s+/g, '-')}-${today.replace(/\./g, '-')}.pdf`
+      doc.save(filename)
+    } catch (error) {
+      console.error('PDF export error:', error)
+      alert('PDF dosyası oluşturulurken bir hata oluştu.')
+    }
   }
 
   if (status === 'loading') {
@@ -336,6 +454,8 @@ export default function ReportsPage() {
           <LeaderboardReport 
             students={filteredStudents}
             loading={loading}
+            onExportExcel={exportToExcel}
+            onExportPDF={exportToPDF}
           />
         )}
       </div>
@@ -458,9 +578,11 @@ function AttendanceReport({ students, onExportExcel, onExportPDF }: AttendanceRe
 interface LeaderboardReportProps {
   students: Student[]
   loading: boolean
+  onExportExcel: () => void
+  onExportPDF: () => void
 }
 
-function LeaderboardReport({ students, loading }: LeaderboardReportProps) {
+function LeaderboardReport({ students, loading, onExportExcel, onExportPDF }: LeaderboardReportProps) {
   if (loading) {
     return (
       <div className="flex justify-center py-8">
@@ -486,64 +608,84 @@ function LeaderboardReport({ students, loading }: LeaderboardReportProps) {
           </CardContent>
         </Card>
       ) : (
-        students.map((student, index) => {
-          const isTopThree = index < 3
-          const position = index + 1
-          
-          return (
-            <Card key={student.id} className={isTopThree ? 'ring-2 ring-primary/20' : ''}>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-4">
-                  {/* Position */}
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg ${
-                    position === 1 ? 'bg-yellow-100 text-yellow-800' :
-                    position === 2 ? 'bg-gray-100 text-gray-800' :
-                    position === 3 ? 'bg-orange-100 text-orange-800' :
-                    'bg-surface text-text-secondary'
-                  }`}>
-                    {position === 1 && (
-                      <span className="material-symbols-outlined text-yellow-600">
-                        workspace_premium
-                      </span>
-                    )}
-                    {position !== 1 && position}
-                  </div>
-                  
-                  {/* Student Photo */}
-                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden flex-shrink-0">
-                    {student.photoUrl ? (
-                      <img 
-                        src={student.photoUrl} 
-                        alt={student.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="material-symbols-outlined text-primary">
-                        person
-                      </span>
-                    )}
-                  </div>
-                  
-                  {/* Student Info */}
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-text-primary">{student.name}</h3>
-                    <p className="text-sm text-text-secondary">
-                      {student.studentNumber} • {student.class} • {student.programName}
-                    </p>
-                  </div>
-                  
-                  {/* Points */}
-                  <div className="text-right">
-                    <div className="font-bold text-primary text-lg">
-                      {student.totalPoints}
+        <>
+          {students.map((student, index) => {
+            const isTopThree = index < 3
+            const position = index + 1
+            
+            return (
+              <Card key={student.id} className={isTopThree ? 'ring-2 ring-primary/20' : ''}>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-4">
+                    {/* Position */}
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg ${
+                      position === 1 ? 'bg-yellow-100 text-yellow-800' :
+                      position === 2 ? 'bg-gray-100 text-gray-800' :
+                      position === 3 ? 'bg-orange-100 text-orange-800' :
+                      'bg-surface text-text-secondary'
+                    }`}>
+                      {position === 1 && (
+                        <span className="material-symbols-outlined text-yellow-600">
+                          workspace_premium
+                        </span>
+                      )}
+                      {position !== 1 && position}
                     </div>
-                    <div className="text-xs text-text-secondary">ARDN</div>
+                    
+                    {/* Student Photo */}
+                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden flex-shrink-0">
+                      {student.photoUrl ? (
+                        <img 
+                          src={student.photoUrl} 
+                          alt={student.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="material-symbols-outlined text-primary">
+                          person
+                        </span>
+                      )}
+                    </div>
+                    
+                    {/* Student Info */}
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-text-primary">{student.name}</h3>
+                      <p className="text-sm text-text-secondary">
+                        {student.studentNumber} • {student.class} • {student.programName}
+                      </p>
+                    </div>
+                    
+                    {/* Points */}
+                    <div className="text-right">
+                      <div className="font-bold text-primary text-lg">
+                        {student.totalPoints}
+                      </div>
+                      <div className="text-xs text-text-secondary">ARDN</div>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          )
-        })
+                </CardContent>
+              </Card>
+            )
+          })}
+          
+          {/* Export Buttons */}
+          <div className="flex gap-4 mt-6">
+            <button
+              onClick={onExportPDF}
+              className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-surface border border-border rounded-lg text-text-primary hover:bg-surface/80 transition-colors"
+            >
+              <span className="material-symbols-outlined text-sm">picture_as_pdf</span>
+              PDF olarak Dışa Aktar
+            </button>
+            <button
+              onClick={onExportExcel}
+              className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-primary text-background rounded-lg hover:bg-primary/90 transition-colors"
+            >
+              <span className="material-symbols-outlined text-sm">description</span>
+              Excel olarak Dışa Aktar
+            </button>
+          </div>
+        </>
       )}
     </div>
   )
