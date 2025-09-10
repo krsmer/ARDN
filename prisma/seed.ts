@@ -27,7 +27,8 @@ async function main() {
         passwordHash: hashedPassword,
         name: 'Test Öğretmen',
         role: 'TEACHER',
-        isActive: true
+        isActive: true,
+        organizationId: testOrg.id
       }
     })
 
@@ -41,6 +42,7 @@ async function main() {
         startDate: new Date('2024-09-01'),
         endDate: new Date('2025-06-15'),
         isActive: true,
+        organizationId: testOrg.id,
         createdById: testUser.id
       }
     })
@@ -80,7 +82,10 @@ async function main() {
 
     for (const student of students) {
       await prisma.student.create({
-        data: student
+        data: {
+          ...student,
+          organizationId: testOrg.id
+        }
       })
     }
 
@@ -94,6 +99,7 @@ async function main() {
         endTime: new Date('2024-09-08T06:00:00'),
         points: 30, // 30 ARDN points
         programId: testProgram.id,
+        organizationId: testOrg.id,
         createdById: testUser.id,
         isRecurring: true,
         recurrenceType: 'DAILY'
