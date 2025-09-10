@@ -41,7 +41,8 @@ export default function ActivitiesPage() {
   const [showParticipationModal, setShowParticipationModal] = useState(false)
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null)
   const [selectedProgram, setSelectedProgram] = useState('all')
-  const [viewMode, setViewMode] = useState<'grouped' | 'individual'>('grouped')
+  const [showGroupDetailsModal, setShowGroupDetailsModal] = useState(false)
+  const [selectedGroup, setSelectedGroup] = useState<any>(null)
   
   const navigationItems = [
     { href: '/dashboard', icon: 'dashboard', label: 'Ana Sayfa', active: false },
@@ -101,15 +102,6 @@ export default function ActivitiesPage() {
 
   // Group recurring activities for better UX
   const groupedActivities = React.useMemo(() => {
-    if (viewMode === 'individual') {
-      return filteredActivities.map(activity => ({
-        ...activity,
-        isGroup: false,
-        groupedCount: 1,
-        totalParticipants: activity.participantCount || 0
-      }))
-    }
-
     const groups = new Map()
     
     filteredActivities.forEach(activity => {
@@ -157,7 +149,7 @@ export default function ActivitiesPage() {
       if (!a.isRecurring && b.isRecurring) return 1
       return new Date(b.activityDate).getTime() - new Date(a.activityDate).getTime()
     })
-  }, [filteredActivities, viewMode])
+  }, [filteredActivities])
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('tr-TR')
@@ -246,32 +238,6 @@ export default function ActivitiesPage() {
               </option>
             ))}
           </select>
-
-          {/* View Mode Toggle */}
-          <div className="flex items-center gap-2 p-1 bg-surface border border-border rounded-lg">
-            <button
-              onClick={() => setViewMode('grouped')}
-              className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                viewMode === 'grouped'
-                  ? 'bg-primary text-background'
-                  : 'text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              <span className="material-symbols-outlined text-xs mr-1">view_module</span>
-              Gruplu Görünüm
-            </button>
-            <button
-              onClick={() => setViewMode('individual')}
-              className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                viewMode === 'individual'
-                  ? 'bg-primary text-background'
-                  : 'text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              <span className="material-symbols-outlined text-xs mr-1">view_list</span>
-              Detay Görünüm
-            </button>
-          </div>
         </div>
 
         {/* Activities List */}
@@ -308,7 +274,18 @@ export default function ActivitiesPage() {
             {groupedActivities.map((activity) => {
               const status = getActivityStatus(activity)
               return (
-                <Card key={activity.isGroup ? `group-${activity.title}-${activity.programId}` : activity.id} className="hover:shadow-md transition-shadow cursor-pointer">
+                <Card 
+                  key={activity.isGroup ? `group-${activity.title}-${activity.programId}` : activity.id} 
+                  className={`hover:shadow-md transition-shadow ${
+                    activity.isGroup ? 'cursor-pointer' : ''
+                  }`}
+                  onClick={() => {
+                    if (activity.isGroup) {
+                      setSelectedGroup(activity)
+                      setShowGroupDetailsModal(true)
+                    }
+                  }}
+                >
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
@@ -390,29 +367,23 @@ export default function ActivitiesPage() {
                       </div>
                       
                       <div className="flex items-center gap-2">
-                        {activity.isGroup && (
-                          <button 
-                            className="px-3 py-1 bg-blue-50 text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors text-sm flex items-center gap-1"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              // TODO: Show group details modal
-                            }}
-                          >
-                            <span className="material-symbols-outlined text-xs">expand_more</span>
-                            Detaylar
-                          </button>
-                        )}
-                        
                         <button 
                           className="px-3 py-1 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors text-sm flex items-center gap-1"
                           onClick={(e) => {
                             e.stopPropagation()
-                            setSelectedActivity(activity.isGroup ? activity.individualActivities[0] : activity)
-                            setShowParticipationModal(true)
+                            if (activity.isGroup) {
+                              setSelectedGroup(activity)
+                              setShowGroupDetailsModal(true)
+                            } else {
+                              setSelectedActivity(activity)
+                              setShowParticipationModal(true)
+                            }
                           }}
                         >
-                          <span className="material-symbols-outlined text-xs">group_add</span>
-                          {activity.isGroup ? 'Bugünkü Oturum' : 'Katılım İşle'}
+                          <span className="material-symbols-outlined text-xs">
+                            {activity.isGroup ? 'visibility' : 'group_add'}
+                          </span>
+                          {activity.isGroup ? `Tüm ${activity.title}` : 'Katılım İşle'}
                         </button>
                       </div>
                     </div>
@@ -430,47 +401,36 @@ export default function ActivitiesPage() {
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <div className="text-lg font-bold text-text-primary">
-                    {viewMode === 'grouped' 
-                      ? groupedActivities.length 
-                      : filteredActivities.length
-                    }
+                    {groupedActivities.length}
                   </div>
                   <div className="text-xs text-text-secondary">
-                    {viewMode === 'grouped' ? 'Aktivite Grubu' : 'Toplam Aktivite'}
+                    Aktivite Grubu
                   </div>
                 </div>
                 <div>
                   <div className="text-lg font-bold text-primary">
-                    {viewMode === 'grouped'
-                      ? Math.round(groupedActivities.reduce((sum, activity) => sum + activity.points, 0) / groupedActivities.length) || 0
-                      : Math.round(filteredActivities.reduce((sum, activity) => sum + activity.points, 0) / filteredActivities.length) || 0
-                    }
+                    {Math.round(groupedActivities.reduce((sum, activity) => sum + activity.points, 0) / groupedActivities.length) || 0}
                   </div>
                   <div className="text-xs text-text-secondary">Ortalama Puan</div>
                 </div>
                 <div>
                   <div className="text-lg font-bold text-green-600">
-                    {viewMode === 'grouped'
-                      ? groupedActivities.reduce((sum, activity) => {
-                          return sum + (activity.isGroup ? activity.points * activity.groupedCount : activity.points)
-                        }, 0)
-                      : filteredActivities.reduce((sum, activity) => sum + activity.points, 0)
-                    }
+                    {groupedActivities.reduce((sum, activity) => {
+                      return sum + (activity.isGroup ? activity.points * activity.groupedCount : activity.points)
+                    }, 0)}
                   </div>
                   <div className="text-xs text-text-secondary">Toplam Puan</div>
                 </div>
               </div>
               
-              {viewMode === 'grouped' && (
-                <div className="mt-3 pt-3 border-t border-border text-center">
-                  <div className="text-sm text-text-secondary">
-                    <span className="inline-flex items-center gap-1">
-                      <span className="material-symbols-outlined text-sm">info</span>
-                      Gruplu görünümde tekrarlı aktiviteler birleştirilerek gösterilir
-                    </span>
-                  </div>
+              <div className="mt-3 pt-3 border-t border-border text-center">
+                <div className="text-sm text-text-secondary">
+                  <span className="inline-flex items-center gap-1">
+                    <span className="material-symbols-outlined text-sm">info</span>
+                    Tekrarlı aktiviteler gruplandırılarak gösterilir. Detaylar için kartlara tıklayın.
+                  </span>
                 </div>
-              )}
+              </div>
             </CardContent>
           </Card>
         )}
@@ -500,6 +460,22 @@ export default function ActivitiesPage() {
             setShowParticipationModal(false)
             setSelectedActivity(null)
             fetchActivities()
+          }}
+        />
+      )}
+
+      {/* Group Details Modal */}
+      {showGroupDetailsModal && selectedGroup && (
+        <GroupDetailsModal 
+          group={selectedGroup}
+          onClose={() => {
+            setShowGroupDetailsModal(false)
+            setSelectedGroup(null)
+          }}
+          onSelectActivity={(activity) => {
+            setSelectedActivity(activity)
+            setShowParticipationModal(true)
+            setShowGroupDetailsModal(false)
           }}
         />
       )}
@@ -1083,7 +1059,7 @@ function ParticipationModal({ activity, onClose, onSuccess }: ParticipationModal
               placeholder="Öğrenci ara..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full text-gray-700 px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
             
             {availableStudents.length > 0 && (
@@ -1256,6 +1232,151 @@ function ParticipationModal({ activity, onClose, onSuccess }: ParticipationModal
             >
               {loading ? 'Kaydediliyor...' : `Katılım Kaydet (${selectedStudents.size})`}
             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Group Details Modal Component
+interface GroupDetailsModalProps {
+  group: any
+  onClose: () => void
+  onSelectActivity: (activity: Activity) => void
+}
+
+function GroupDetailsModal({ group, onClose, onSelectActivity }: GroupDetailsModalProps) {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('tr-TR')
+  }
+
+  const formatTime = (timeString: string) => {
+    return new Date(timeString).toLocaleTimeString('tr-TR', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    })
+  }
+
+  const getActivityStatus = (activity: Activity) => {
+    const now = new Date()
+    const activityDate = new Date(activity.activityDate)
+    const startTime = new Date(activity.startTime)
+    const endTime = activity.endTime ? new Date(activity.endTime) : null
+    
+    if (activityDate < now) {
+      if (endTime && endTime < now) {
+        return { label: 'Tamamlandı', color: 'bg-green-100 text-green-800' }
+      } else if (startTime < now) {
+        return { label: 'Devam Ediyor', color: 'bg-blue-100 text-blue-800' }
+      }
+    }
+    
+    return { label: 'Bekliyor', color: 'bg-yellow-100 text-yellow-800' }
+  }
+
+  // Sort individual activities by date (oldest first)
+  const sortedActivities = group.individualActivities.sort((a: Activity, b: Activity) => 
+    new Date(a.activityDate).getTime() - new Date(b.activityDate).getTime()
+  )
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-background rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="p-6 border-b border-border">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-text-primary">{group.title}</h2>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-surface rounded-full transition-colors"
+            >
+              <span className="material-symbols-outlined text-text-secondary">close</span>
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4 text-sm text-text-secondary">
+            <div className="flex items-center gap-1">
+              <span className="material-symbols-outlined text-sm">repeat</span>
+              {group.groupedCount} oturum
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="material-symbols-outlined text-sm">schedule</span>
+              {formatTime(group.startTime)}
+              {group.endTime && ` - ${formatTime(group.endTime)}`}
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="material-symbols-outlined text-sm">calendar_month</span>
+              {group.programName}
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="material-symbols-outlined text-sm">groups</span>
+              {group.totalParticipants} toplam katılımcı
+            </div>
+          </div>
+          
+          <div className="mt-4 flex items-center gap-1">
+            <span className="material-symbols-outlined text-sm text-primary">stars</span>
+            <span className="font-semibold text-primary">{group.points} ARDN / oturum</span>
+          </div>
+        </div>
+        
+        <div className="flex-1 overflow-y-auto p-4">
+          <h3 className="text-lg font-medium text-text-primary mb-4">Tüm Oturumlar</h3>
+          
+          <div className="space-y-3">
+            {sortedActivities.map((activity: Activity) => {
+              const status = getActivityStatus(activity)
+              const isToday = new Date(activity.activityDate).toDateString() === new Date().toDateString()
+              
+              return (
+                <div
+                  key={activity.id}
+                  className={`p-4 border rounded-lg transition-colors ${
+                    isToday 
+                      ? 'border-primary bg-primary/5' 
+                      : 'border-border hover:bg-surface'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-medium text-text-primary">
+                          {formatDate(activity.activityDate)}
+                        </span>
+                        {isToday && (
+                          <span className="px-2 py-1 text-xs bg-primary text-background rounded-full">
+                            Bugün
+                          </span>
+                        )}
+                        <span className={`px-2 py-1 text-xs rounded-full ${status.color}`}>
+                          {status.label}
+                        </span>
+                      </div>
+                      
+                      <div className="text-sm text-text-secondary">
+                        {activity.participantCount || 0} katılımcı
+                        {activity.maxParticipants && ` / ${activity.maxParticipants} max`}
+                      </div>
+                    </div>
+                    
+                    <button 
+                      className="px-3 py-1 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors text-sm flex items-center gap-1"
+                      onClick={() => onSelectActivity(activity)}
+                    >
+                      <span className="material-symbols-outlined text-xs">group_add</span>
+                      Katılım İşle
+                    </button>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+        
+        <div className="p-4 border-t border-border">
+          <div className="flex items-center justify-between text-sm text-text-secondary">
+            <span>Toplam {group.groupedCount} oturum</span>
+            <span>Toplam {group.totalParticipants} katılım</span>
           </div>
         </div>
       </div>
