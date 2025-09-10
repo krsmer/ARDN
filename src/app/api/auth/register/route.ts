@@ -143,9 +143,31 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Registration error:', error)
+    
+    // Provide more specific error messages based on error type
+    let errorMessage = 'Kayıt işlemi sırasında hata oluştu'
+    
+    if (error instanceof Error) {
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      })
+      
+      // Check for specific database errors
+      if (error.message.includes('P2002')) {
+        errorMessage = 'Bu email veya yurt kodu zaten kullanımda'
+      } else if (error.message.includes('connection')) {
+        errorMessage = 'Veritabanı bağlantı hatası'
+      } else if (error.message.includes('timeout')) {
+        errorMessage = 'İşlem zaman aşımına uğradı, lütfen tekrar deneyin'
+      }
+    }
+    
     return NextResponse.json({
       success: false,
-      message: 'Kayıt işlemi sırasında hata oluştu'
+      message: errorMessage,
+      debug: process.env.NODE_ENV === 'development' ? error instanceof Error ? error.message : 'Unknown error' : undefined
     }, { status: 500 })
   }
 }
