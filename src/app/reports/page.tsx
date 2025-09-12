@@ -6,8 +6,16 @@ import { useRouter } from 'next/navigation'
 import { Header, BottomNavigation } from '../../components/ui/navigation'
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/card'
 import * as XLSX from 'xlsx'
-import jsPDF from 'jspdf'
-import 'jspdf-autotable'
+
+// Dynamic import for jsPDF to avoid SSR issues
+let jsPDF: any = null
+if (typeof window !== 'undefined') {
+  import('jspdf').then((module) => {
+    jsPDF = module.default
+    // Import autotable plugin
+    import('jspdf-autotable')
+  })
+}
 
 interface Student {
   id: string
@@ -229,12 +237,17 @@ export default function ReportsPage() {
     }
   }
 
-  const exportToPDF = () => {
+  const exportToPDF = async () => {
     try {
-      const doc = new jsPDF()
+      // Ensure jsPDF is loaded
+      if (!jsPDF) {
+        const jsPDFModule = await import('jspdf')
+        jsPDF = jsPDFModule.default
+        // Import autotable plugin
+        await import('jspdf-autotable')
+      }
       
-      // Set Turkish font support
-      doc.setFont('helvetica')
+      const doc = new jsPDF()
       
       let title = ''
       let headers: string[][] = []
@@ -243,33 +256,37 @@ export default function ReportsPage() {
       if (activeTab === 'participation') {
         title = 'Katılım Raporu'
         headers = [['Tarih', 'Katılım Oranı (%)', 'Toplam Aktivite', 'Toplam Katılım']]
-        data = participationData.map(item => ([
-          item.date,
-          item.participationRate.toString(),
-          item.totalActivities.toString(),
-          item.totalParticipations.toString()
-        ]))
+        // Since participation is now inactive, create sample data
+        data = [['Veri bulunamadı', '-', '-', '-']]
       } else if (activeTab === 'attendance') {
         title = 'Devamsızlık Raporu'
         headers = [['Öğrenci No', 'Ad Soyad', 'Sınıf', 'Toplam Puan', 'Program']]
-        data = filteredStudents.map(student => ([
-          student.studentNumber,
-          student.name,
-          student.class,
-          student.totalPoints.toString(),
-          student.programName
-        ]))
+        if (filteredStudents.length > 0) {
+          data = filteredStudents.map(student => ([
+            student.studentNumber || '-',
+            student.name || '-',
+            student.class || '-',
+            student.totalPoints?.toString() || '0',
+            student.programName || '-'
+          ]))
+        } else {
+          data = [['Veri bulunamadı', '-', '-', '-', '-']]
+        }
       } else if (activeTab === 'leaderboard') {
         title = 'Liderlik Tablosu'
         headers = [['Sıra', 'Öğrenci No', 'Ad Soyad', 'Sınıf', 'Toplam Puan', 'Program']]
-        data = filteredStudents.map((student, index) => ([
-          (index + 1).toString(),
-          student.studentNumber,
-          student.name,
-          student.class,
-          student.totalPoints.toString(),
-          student.programName
-        ]))
+        if (filteredStudents.length > 0) {
+          data = filteredStudents.map((student, index) => ([
+            (index + 1).toString(),
+            student.studentNumber || '-',
+            student.name || '-',
+            student.class || '-',
+            student.totalPoints?.toString() || '0',
+            student.programName || '-'
+          ]))
+        } else {
+          data = [['Veri bulunamadı', '-', '-', '-', '-', '-']]
+        }
       }
 
       // Add title
@@ -281,26 +298,85 @@ export default function ReportsPage() {
       doc.setFontSize(10)
       doc.text(`Rapor Tarihi: ${today}`, 14, 30)
 
-      // Add table
-      ;(doc as any).autoTable({
-        head: headers,
-        body: data,
-        startY: 40,
-        styles: {
-          fontSize: 8,
-          cellPadding: 2
-        },
-        headStyles: {
-          fillColor: [59, 130, 246], // Blue color
-          textColor: 255
-        }
-      })
+      // Check if autoTable is available
+      if (typeof (doc as any).autoTable === 'function') {
+        // Add table using autoTable
+        ;(doc as any).autoTable({
+          head: headers,
+          body: data,
+          startY: 40,
+          styles: {
+            fontSize: 8,
+            cellPadding: 3,
+            overflow: 'linebreak',
+            cellWidth: 'wrap'
+          },
+          headStyles: {
+            fillColor: [56, 224, 123], // Primary green color
+            textColor: [18, 33, 24], // Dark background color
+            fontStyle: 'bold'
+          },
+          margin: { top: 40 },
+          tableWidth: 'auto'
+        })
+      } else {
+        // Fallback: simple text-based table
+        let yPosition = 50
+        
+        // Add headers
+        doc.setFontSize(10)
+        doc.setFont('helvetica', 'bold')
+        const headerText = headers[0].join(' | ')
+        doc.text(headerText, 14, yPosition)
+        yPosition += 10
+        
+        // Add data rows
+        doc.setFont('helvetica', 'normal')
+        doc.setFontSize(9)
+        data.forEach((row, index) => {
+          if (yPosition > 270) { // Start new page if needed
+            doc.addPage()
+            yPosition = 20
+          }
+          const rowText = row.join(' | ')
+          doc.text(rowText, 14, yPosition)
+          yPosition += 8
+        })
+      }
       
-      const filename = `${title.toLowerCase().replace(/\s+/g, '-')}-${today.replace(/\./g, '-')}.pdf`
+      // Generate filename
+      const safeTitle = title.toLowerCase()
+        .replace(/ç/g, 'c')
+        .replace(/ğ/g, 'g')
+        .replace(/ı/g, 'i')
+        .replace(/ö/g, 'o')
+        .replace(/ş/g, 's')
+        .replace(/ü/g, 'u')
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '')
+      
+      const safeDate = today.replace(/\./g, '-')
+      const filename = `${safeTitle}-${safeDate}.pdf`
+      
+      // Save the PDF
       doc.save(filename)
+      
     } catch (error) {
       console.error('PDF export error:', error)
-      alert('PDF dosyası oluşturulurken bir hata oluştu.')
+      
+      // More detailed error message
+      let errorMessage = 'PDF dosyası oluşturulurken bir hata oluştu.'
+      
+      if (error instanceof Error) {
+        console.error('Error details:', error.message)
+        if (error.message.includes('autoTable')) {
+          errorMessage += ' AutoTable eklentisi yüklenemedi.'
+        } else if (error.message.includes('jsPDF')) {
+          errorMessage += ' PDF kütüphanesi yüklenemedi.'
+        }
+      }
+      
+      alert(errorMessage)
     }
   }
 
