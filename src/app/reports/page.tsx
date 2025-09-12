@@ -473,32 +473,23 @@ interface ParticipationReportProps {
 }
 
 function ParticipationReport({ participationData, onExportExcel, onExportPDF }: ParticipationReportProps) {
-  const maxRate = Math.max(...participationData.map(d => d.participationRate))
-  
   return (
     <div className="space-y-6">
-      {/* Weekly Participation Chart */}
       <Card>
         <CardHeader>
-          <CardTitle>Haftalık Katılım Oranları</CardTitle>
+          <CardTitle>Katılım Analizi</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-7 gap-3 items-end h-48">
-            {participationData.map((data, index) => (
-              <div key={index} className="flex flex-col items-center gap-2">
-                <div className="w-full bg-surface border border-border rounded-lg flex-grow flex items-end relative">
-                  <div 
-                    className="w-full bg-primary rounded-lg transition-all duration-500 flex items-end justify-center"
-                    style={{ height: `${(data.participationRate / maxRate) * 100}%` }}
-                  >
-                    <span className="text-xs text-background font-medium mb-1">
-                      {data.participationRate}%
-                    </span>
-                  </div>
-                </div>
-                <p className="text-text-secondary text-xs font-medium">{data.date}</p>
-              </div>
-            ))}
+          <div className="text-center py-8">
+            <span className="material-symbols-outlined text-4xl text-text-secondary mb-4 block">
+              analytics
+            </span>
+            <h3 className="text-lg font-medium text-text-primary mb-2">
+              Katılım Analizi
+            </h3>
+            <p className="text-text-secondary">
+              Bu özellik yakında eklenecek
+            </p>
           </div>
         </CardContent>
       </Card>
