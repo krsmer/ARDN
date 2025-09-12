@@ -1,0 +1,10 @@
+<!-- Basic fallback PNG icon -->
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <rect width="192" height="192" rx="24" fill="#122118"/>
+  <circle cx="96" cy="68" r="30" fill="#38e07b"/>
+  <rect x="66" y="105" width="60" height="45" rx="6" fill="#38e07b"/>
+  <rect x="75" y="112" width="42" height="6" rx="3" fill="#122118"/>
+  <rect x="75" y="123" width="30" height="6" rx="3" fill="#122118"/>
+  <rect x="75" y="135" width="36" height="6" rx="3" fill="#122118"/>
+  <text x="96" y="170" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#38e07b">ARDN</text>
+</svg>

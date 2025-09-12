@@ -1,0 +1,9 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="64" fill="#122118"/>
+  <circle cx="256" cy="180" r="80" fill="#38e07b"/>
+  <rect x="176" y="280" width="160" height="120" rx="16" fill="#38e07b"/>
+  <rect x="200" y="300" width="112" height="16" rx="8" fill="#122118"/>
+  <rect x="200" y="330" width="80" height="16" rx="8" fill="#122118"/>
+  <rect x="200" y="360" width="96" height="16" rx="8" fill="#122118"/>
+  <text x="256" y="450" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#38e07b">ARDN</text>
+</svg>

@@ -12,3 +12,5 @@ export type { AvatarProps } from './avatar'
 
 export { BottomNavigation, Header, TabNavigation } from './navigation'
 export type { NavigationItem, BottomNavigationProps, HeaderProps, TabItem, TabNavigationProps } from './navigation'
+
+export { default as PWAInstallPrompt } from './pwa-install-prompt'

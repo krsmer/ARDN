@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Spline_Sans } from "next/font/google";
 import { Providers } from "../components/providers";
+import PWAInstallPrompt from "../components/ui/pwa-install-prompt";
 import "./globals.css";
 
 const splineSans = Spline_Sans({
@@ -10,13 +11,24 @@ const splineSans = Spline_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Öğrenci Takip Uygulaması",
+  title: "ARDN - Öğrenci Takip Sistemi",
   description: "Yatılı öğrenci kurumları için puan sistemli takip uygulaması",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "ARDN",
+  },
+  icons: {
+    icon: "/icons/icon.svg",
+    apple: "/icons/icon-192x192.png",
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  themeColor: "#38e07b",
 };
 
 export default function RootLayout({
@@ -43,6 +55,7 @@ export default function RootLayout({
       >
         <Providers>
           {children}
+          <PWAInstallPrompt />
         </Providers>
       </body>
     </html>
