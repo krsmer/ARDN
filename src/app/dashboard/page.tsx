@@ -85,7 +85,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background pb-20">
       <Header 
-        title="Dashboard"
+        title="Ana Sayfa"
         action={
           <button 
             onClick={() => signOut({ callbackUrl: '/login' })}
