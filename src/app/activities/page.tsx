@@ -163,19 +163,20 @@ export default function ActivitiesPage() {
   }
 
   const getActivityStatus = (activity: Activity) => {
-    const now = new Date()
-    const activityDate = new Date(activity.activityDate)
-    const startTime = new Date(activity.startTime)
-    const endTime = activity.endTime ? new Date(activity.endTime) : null
-    
-    if (activityDate < now) {
-      if (endTime && endTime < now) {
-        return { label: 'Tamamlandı', color: 'bg-green-100 text-green-800' }
-      } else if (startTime < now) {
-        return { label: 'Devam Ediyor', color: 'bg-blue-100 text-blue-800' }
-      }
+    const now = new Date();
+    const startTime = new Date(activity.startTime);
+    // Bitiş saati yoksa, başlangıçtan 3 saat sonrasını varsayalım.
+    const endTime = activity.endTime 
+      ? new Date(activity.endTime) 
+      : new Date(startTime.getTime() + 3 * 60 * 60 * 1000);
+
+    if (now > endTime) {
+      return { label: 'Tamamlandı', color: 'bg-green-100 text-green-800', isOver: true };
     }
-    
+    if (now >= startTime && now <= endTime) {
+      return { label: 'Devam Ediyor', color: 'bg-blue-100 text-blue-800', isOver: false };
+    }
+
     return { label: 'Bekliyor', color: 'bg-yellow-100 text-yellow-800' }
   }
 
@@ -367,24 +368,26 @@ export default function ActivitiesPage() {
                       </div>
                       
                       <div className="flex items-center gap-2">
-                        <button 
-                          className="px-3 py-1 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors text-sm flex items-center gap-1"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            if (activity.isGroup) {
-                              setSelectedGroup(activity)
-                              setShowGroupDetailsModal(true)
-                            } else {
-                              setSelectedActivity(activity)
-                              setShowParticipationModal(true)
-                            }
-                          }}
-                        >
-                          <span className="material-symbols-outlined text-xs">
-                            {activity.isGroup ? 'visibility' : 'group_add'}
-                          </span>
-                          {activity.isGroup ? `Tüm ${activity.title}` : 'Katılım İşle'}
-                        </button>
+                        {!status.isOver && (
+                          <button 
+                            className="px-3 py-1 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors text-sm flex items-center gap-1"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              if (activity.isGroup) {
+                                setSelectedGroup(activity)
+                                setShowGroupDetailsModal(true)
+                              } else {
+                                setSelectedActivity(activity)
+                                setShowParticipationModal(true)
+                              }
+                            }}
+                          >
+                            <span className="material-symbols-outlined text-xs">
+                              {activity.isGroup ? 'visibility' : 'group_add'}
+                            </span>
+                            {activity.isGroup ? `Tüm ${activity.title}` : 'Katılım İşle'}
+                          </button>
+                        )}
                       </div>
                     </div>
                   </CardContent>
@@ -1260,16 +1263,17 @@ function GroupDetailsModal({ group, onClose, onSelectActivity }: GroupDetailsMod
 
   const getActivityStatus = (activity: Activity) => {
     const now = new Date()
-    const activityDate = new Date(activity.activityDate)
     const startTime = new Date(activity.startTime)
-    const endTime = activity.endTime ? new Date(activity.endTime) : null
+    // Bitiş saati yoksa, başlangıçtan 3 saat sonrasını varsayalım.
+    const endTime = activity.endTime 
+      ? new Date(activity.endTime) 
+      : new Date(startTime.getTime() + 3 * 60 * 60 * 1000);
     
-    if (activityDate < now) {
-      if (endTime && endTime < now) {
-        return { label: 'Tamamlandı', color: 'bg-green-100 text-green-800' }
-      } else if (startTime < now) {
-        return { label: 'Devam Ediyor', color: 'bg-blue-100 text-blue-800' }
-      }
+    if (now > endTime) {
+      return { label: 'Tamamlandı', color: 'bg-green-100 text-green-800', isOver: true };
+    }
+    if (now >= startTime && now <= endTime) {
+      return { label: 'Devam Ediyor', color: 'bg-blue-100 text-blue-800', isOver: false };
     }
     
     return { label: 'Bekliyor', color: 'bg-yellow-100 text-yellow-800' }
@@ -1359,13 +1363,15 @@ function GroupDetailsModal({ group, onClose, onSelectActivity }: GroupDetailsMod
                       </div>
                     </div>
                     
-                    <button 
-                      className="px-3 py-1 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors text-sm flex items-center gap-1"
-                      onClick={() => onSelectActivity(activity)}
-                    >
-                      <span className="material-symbols-outlined text-xs">group_add</span>
-                      Katılım İşle
-                    </button>
+                    {!status.isOver && (
+                      <button 
+                        className="px-3 py-1 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors text-sm flex items-center gap-1"
+                        onClick={() => onSelectActivity(activity)}
+                      >
+                        <span className="material-symbols-outlined text-xs">group_add</span>
+                        Katılım İşle
+                      </button>
+                    )}
                   </div>
                 </div>
               )

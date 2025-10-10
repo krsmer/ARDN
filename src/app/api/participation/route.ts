@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
       }, { status: 404 })
     }
 
-    // Check if participation already exists
+    // Check if participation already exists BEFORE checking activity time
     const existingParticipation = await prisma.participation.findUnique({
       where: {
         studentId_activityId: {
@@ -70,6 +70,22 @@ export async function POST(request: NextRequest) {
         message: 'Bu öğrenci zaten bu aktiviteye katıldı olarak işaretlendi'
       }, { status: 409 })
     }
+
+    // --- YENİ KONTROL: Aktivitenin süresi dolmuş mu? ---
+    const now = new Date();
+    // Prisma'dan gelen `startTime` ve `endTime` zaten Date nesneleridir.
+    // Eğer bitiş saati belirtilmemişse, başlangıç saatinden 3 saat sonrasını varsayalım.
+    const activityEndTime = activity.endTime 
+      ? activity.endTime 
+      : new Date(activity.startTime.getTime() + 3 * 60 * 60 * 1000);
+
+    if (now > activityEndTime) {
+      return NextResponse.json({ 
+        success: false, 
+        message: 'Bu aktivitenin süresi dolduğu için katılım kaydedilemez.' 
+      }, { status: 400 });
+    }
+    // --- YENİ KONTROL SONU ---
 
     // Calculate points - use provided points or activity default
     let earnedPoints = pointsEarned !== undefined ? pointsEarned : activity.points

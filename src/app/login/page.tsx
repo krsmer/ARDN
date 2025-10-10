@@ -22,7 +22,6 @@ function LoginForm() {
   // Load remembered credentials on component mount
   useEffect(() => {
     const rememberedEmail = localStorage.getItem('rememberedEmail')
-    const rememberedPassword = localStorage.getItem('rememberedPassword')
     
     if (rememberedEmail) {
       setEmail(rememberedEmail)
@@ -33,9 +32,6 @@ function LoginForm() {
       setTimeout(() => {
         console.log('✅ Kaydedilmiş giriş bilgileri yüklendi')
       }, 500)
-    }
-    if (rememberedPassword) {
-      setPassword(rememberedPassword)
     }
   }, [])
 
@@ -61,18 +57,15 @@ function LoginForm() {
       // Handle remember me functionality
       if (rememberMe) {
         localStorage.setItem('rememberedEmail', email)
-        localStorage.setItem('rememberedPassword', password)
       } else {
         localStorage.removeItem('rememberedEmail')
-        localStorage.removeItem('rememberedPassword')
       }
       
       const result = await signIn('credentials', {
         email,
         password,
+        rememberMe,
         redirect: false,
-        // Extend session if remember me is checked
-        callbackUrl: rememberMe ? '/dashboard?remember=true' : '/dashboard'
       })
       
       if (result?.error) {
