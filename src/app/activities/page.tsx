@@ -1027,8 +1027,8 @@ function ParticipationModal({ activity, onClose, onSuccess }: ParticipationModal
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-background rounded-lg w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col">
-        <div className="p-6 border-b border-border">
+      <div className="bg-background rounded-lg w-full max-w-lg max-h-[95vh] overflow-hidden flex flex-col">
+        <div className="p-6 border-b border-border flex-shrink-0">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-text-primary">Katılım İşle</h2>
             <button
@@ -1056,7 +1056,7 @@ function ParticipationModal({ activity, onClose, onSuccess }: ParticipationModal
             </p>
           </div>
 
-          <div className="mt-4 space-y-3">
+          <div className="mt-4 space-y-3 sticky top-0 bg-background z-10">
             <input
               type="text"
               placeholder="Öğrenci ara..."
@@ -1081,23 +1081,10 @@ function ParticipationModal({ activity, onClose, onSuccess }: ParticipationModal
                 </button>
               </div>
             )}
-            
-            {/* Warning for existing participations */}
-            {participatedStudents.length > 0 && (
-              <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                <div className="flex items-center gap-2 text-orange-700">
-                  <span className="material-symbols-outlined text-sm">warning</span>
-                  <span className="text-sm font-medium">Zaten Katılım Kayıtlı</span>
-                </div>
-                <p className="text-xs text-orange-600 mt-1">
-                  {participatedStudents.length} öğrenci bu aktiviteye zaten katıldı olarak işaretlenmiş. Tekrar katılım kaydı yapılamaz.
-                </p>
-              </div>
-            )}
           </div>
         </div>
         
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto p-6 pt-4">
           {filteredStudents.length === 0 ? (
             <div className="text-center py-8 text-text-secondary">
               <span className="material-symbols-outlined text-4xl mb-2 block">groups</span>
@@ -1200,7 +1187,7 @@ function ParticipationModal({ activity, onClose, onSuccess }: ParticipationModal
           )}
         </div>
         
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-border flex-shrink-0">
           <div className="flex items-center justify-between mb-4">
             <div className="text-sm text-text-secondary">
               <span className="font-medium">{selectedStudents.size} öğrenci seçildi</span>
