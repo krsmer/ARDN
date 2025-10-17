@@ -98,7 +98,7 @@ export default function RegisterPage() {
         // Redirect to login after 2 seconds
         setTimeout(() => {
           router.push('/login?registered=true')
-        }, 2000)
+        }, 1800)
       } else {
         setError(data.message)
       }
