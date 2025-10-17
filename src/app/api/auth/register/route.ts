@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
+import { z } from 'zod'
 import prisma from '../../../../lib/prisma'
 
 interface RegisterRequest {
@@ -16,49 +17,44 @@ interface RegisterRequest {
   adminPassword: string
 }
 
+// Define a schema for input validation using Zod
+const registerSchema = z.object({
+  organizationName: z.string().min(3, 'Yurt adı en az 3 karakter olmalıdır.'),
+  organizationSlug: z.string().min(3, 'Yurt kodu en az 3 karakter olmalıdır.').regex(/^[a-z0-9-]+$/, 'Yurt kodu sadece küçük harf, rakam ve tire içerebilir.'),
+  organizationAddress: z.string().optional(),
+  organizationPhone: z.string().optional(),
+  organizationEmail: z.string().email('Geçersiz yurt e-posta adresi.').optional(),
+  adminName: z.string().min(2, 'Yönetici adı en az 2 karakter olmalıdır.'),
+  adminEmail: z.string().email('Geçersiz yönetici e-posta adresi.'),
+  adminPassword: z.string().min(8, 'Şifre en az 8 karakter olmalıdır.')
+});
+
 export async function POST(request: NextRequest) {
   try {
     const body: RegisterRequest = await request.json()
-    const {
-      organizationName,
-      organizationSlug,
-      organizationAddress,
-      organizationPhone,
-      organizationEmail,
-      adminName,
-      adminEmail,
-      adminPassword
-    } = body
 
-    // Validate required fields
-    if (!organizationName || !organizationSlug || !adminName || !adminEmail || !adminPassword) {
+    // Validate request body against the schema
+    const validationResult = registerSchema.safeParse(body);
+    if (!validationResult.success) {
       return NextResponse.json({
         success: false,
-        message: 'Tüm zorunlu alanları doldurun'
-      }, { status: 400 })
+        message: 'Geçersiz form verisi.',
+        errors: validationResult.error.flatten().fieldErrors,
+      }, { status: 400 });
     }
 
-    // Validate organization slug format (URL-friendly)
-    const slugRegex = /^[a-z0-9-]+$/
-    if (!slugRegex.test(organizationSlug)) {
-      return NextResponse.json({
-        success: false,
-        message: 'Yurt kodu sadece küçük harf, rakam ve tire içerebilir'
-      }, { status: 400 })
-    }
+    const { organizationSlug, adminEmail, adminPassword } = validationResult.data;
 
     // Check if organization slug already exists
     const existingOrg = await prisma.organization.findUnique({
       where: { slug: organizationSlug }
     })
-
     if (existingOrg) {
       return NextResponse.json({
         success: false,
         message: 'Bu yurt kodu zaten kullanımda. Lütfen farklı bir kod seçin.'
       }, { status: 409 })
     }
-
     // Check if admin email already exists
     const existingUser = await prisma.user.findUnique({
       where: { email: adminEmail }
@@ -71,14 +67,6 @@ export async function POST(request: NextRequest) {
       }, { status: 409 })
     }
 
-    // Validate password strength
-    if (adminPassword.length < 6) {
-      return NextResponse.json({
-        success: false,
-        message: 'Şifre en az 6 karakter olmalıdır'
-      }, { status: 400 })
-    }
-
     // Hash password
     const hashedPassword = await bcrypt.hash(adminPassword, 10)
 
@@ -87,11 +75,11 @@ export async function POST(request: NextRequest) {
       // Create organization
       const organization = await tx.organization.create({
         data: {
-          name: organizationName,
-          slug: organizationSlug,
-          address: organizationAddress,
-          phone: organizationPhone,
-          email: organizationEmail,
+          name: validationResult.data.organizationName,
+          slug: validationResult.data.organizationSlug,
+          address: validationResult.data.organizationAddress,
+          phone: validationResult.data.organizationPhone,
+          email: validationResult.data.organizationEmail,
           isActive: true
         }
       })
@@ -99,10 +87,10 @@ export async function POST(request: NextRequest) {
       // Create admin user
       const adminUser = await tx.user.create({
         data: {
-          email: adminEmail,
+          email: validationResult.data.adminEmail,
           passwordHash: hashedPassword,
-          name: adminName,
-          role: 'ORGANIZATION_ADMIN',
+          name: validationResult.data.adminName,
+          role: 'ORGANIZATION_ADMIN', // Consider using an enum for roles
           organizationId: organization.id,
           isActive: true
         }
@@ -112,7 +100,7 @@ export async function POST(request: NextRequest) {
       const defaultProgram = await tx.program.create({
         data: {
           name: '2024-2025 Akademik Yılı',
-          description: `${organizationName} için varsayılan ARDN puan takip programı`,
+          description: `${validationResult.data.organizationName} için varsayılan ARDN puan takip programı`,
           startDate: new Date('2024-09-01'),
           endDate: new Date('2025-06-30'),
           organizationId: organization.id,
@@ -147,14 +135,14 @@ export async function POST(request: NextRequest) {
     // Provide more specific error messages based on error type
     let errorMessage = 'Kayıt işlemi sırasında hata oluştu'
     
-    if (error instanceof Error) {
+    if (error instanceof Error) { // This check is good practice
       console.error('Error details:', {
         message: error.message,
         stack: error.stack,
         name: error.name
       })
       
-      // Check for specific database errors
+      // Check for specific database errors (Prisma-specific error handling is even better)
       if (error.message.includes('P2002')) {
         errorMessage = 'Bu email veya yurt kodu zaten kullanımda'
       } else if (error.message.includes('connection')) {
