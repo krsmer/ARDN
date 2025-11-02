@@ -5,11 +5,9 @@ import withPWA from 'next-pwa';
 const nextConfig: NextConfig = {
   serverExternalPackages: ['@prisma/client', 'bcryptjs'],
   typescript: {
-    // ⚠️ Be careful with this option in production
     ignoreBuildErrors: false,
   },
   eslint: {
-    // ⚠️ Be careful with this option in production  
     ignoreDuringBuilds: true,
   },
 };
@@ -41,6 +39,17 @@ const pwaConfig = withPWA({
           maxAgeSeconds: 24 * 60 * 60 // 24 hours
         },
         networkTimeoutSeconds: 10
+      }
+    },
+    {
+      urlPattern: /^https:\/\/.*/i,
+      handler: 'NetworkFirst',
+      options: {
+        cacheName: 'offlineCache',
+        expiration: {
+          maxEntries: 200,
+          maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
+        }
       }
     }
   ]

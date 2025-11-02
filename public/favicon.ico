@@ -1,8 +1,10 @@
-<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" rx="4" fill="#122118"/>
-  <circle cx="16" cy="12" r="5" fill="#38e07b"/>
-  <rect x="11" y="18" width="10" height="8" rx="1" fill="#38e07b"/>
-  <rect x="12" y="19" width="7" height="1" rx="0.5" fill="#122118"/>
-  <rect x="12" y="21" width="5" height="1" rx="0.5" fill="#122118"/>
-  <rect x="12" y="23" width="6" height="1" rx="0.5" fill="#122118"/>
+<!-- Basic fallback PNG icon -->
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <rect width="192" height="192" rx="24" fill="#122118"/>
+  <circle cx="96" cy="68" r="30" fill="#38e07b"/>
+  <rect x="66" y="105" width="60" height="45" rx="6" fill="#38e07b"/>
+  <rect x="75" y="112" width="42" height="6" rx="3" fill="#122118"/>
+  <rect x="75" y="123" width="30" height="6" rx="3" fill="#122118"/>
+  <rect x="75" y="135" width="36" height="6" rx="3" fill="#122118"/>
+  <text x="96" y="170" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#38e07b">ARDN</text>
 </svg>

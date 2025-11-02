@@ -1,7 +1,7 @@
 {
   "name": "ARDN Öğrenci Takip Sistemi",
   "short_name": "ARDN",
-  "description": "Yurt öğrenci puan takip ve yönetim sistemi",
+  "description": "Yurt öğrenci puan takip ve yönetim sistemi - Offline erişim destekli",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#122118",
@@ -10,6 +10,7 @@
   "scope": "/",
   "lang": "tr",
   "categories": ["education", "productivity"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icons/icon-72x72.png",

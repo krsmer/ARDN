@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARDN - Çevrimdışı</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #122118;
+            color: #e5e7eb;
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container {
+            max-width: 400px;
+            padding: 2rem;
+        }
+        .icon {
+            width: 80px;
+            height: 80px;
+            background: #38e07b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 2rem;
+        }
+        h1 {
+            color: #38e07b;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        p {
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        .retry-btn {
+            background: #38e07b;
+            color: #122118;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .retry-btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🏫</div>
+        <h1>İnternet Bağlantısı Yok</h1>
+        <p>
+            ARDN uygulaması çevrimdışı modda çalışıyor. 
+            İnternet bağlantınızı kontrol edip tekrar deneyin.
+        </p>
+        <button class="retry-btn" onclick="window.location.reload()">
+            Tekrar Dene
+        </button>
+    </div>
+</body>
+</html>
