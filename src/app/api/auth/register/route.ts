@@ -9,7 +9,6 @@ interface RegisterRequest {
   organizationSlug: string
   organizationAddress?: string
   organizationPhone?: string
-  organizationEmail?: string
   
   // Admin user info
   adminName: string
@@ -23,7 +22,6 @@ const registerSchema = z.object({
   organizationSlug: z.string().min(3, 'Yurt kodu en az 3 karakter olmalıdır.').regex(/^[a-z0-9-]+$/, 'Yurt kodu sadece küçük harf, rakam ve tire içerebilir.'),
   organizationAddress: z.string().optional(),
   organizationPhone: z.string().optional(),
-  organizationEmail: z.string().email('Geçersiz yurt e-posta adresi.').optional(),
   adminName: z.string().min(2, 'Yönetici adı en az 2 karakter olmalıdır.'),
   adminEmail: z.string().email('Geçersiz yönetici e-posta adresi.'),
   adminPassword: z.string().min(8, 'Şifre en az 8 karakter olmalıdır.')
@@ -79,7 +77,7 @@ export async function POST(request: NextRequest) {
           slug: validationResult.data.organizationSlug,
           address: validationResult.data.organizationAddress,
           phone: validationResult.data.organizationPhone,
-          email: validationResult.data.organizationEmail,
+          email: null, // Removed organizationEmail
           isActive: true
         }
       })

@@ -14,7 +14,6 @@ export default function RegisterPage() {
   const [organizationSlug, setOrganizationSlug] = useState('')
   const [organizationAddress, setOrganizationAddress] = useState('')
   const [organizationPhone, setOrganizationPhone] = useState('')
-  const [organizationEmail, setOrganizationEmail] = useState('')
   
   // Admin user info
   const [adminName, setAdminName] = useState('')
@@ -73,6 +72,13 @@ export default function RegisterPage() {
       return
     }
     
+    // Ensure slug is generated from organization name
+    if (!organizationSlug || organizationSlug.trim() === '') {
+      setError('Yurt adı geçerli değil. Lütfen geçerli bir yurt adı girin.')
+      setIsLoading(false)
+      return
+    }
+    
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
@@ -84,7 +90,6 @@ export default function RegisterPage() {
           organizationSlug,
           organizationAddress,
           organizationPhone,
-          organizationEmail,
           adminName,
           adminEmail,
           adminPassword
@@ -166,23 +171,6 @@ export default function RegisterPage() {
                     />
                   </div>
                   
-                  <div className="md:col-span-2">
-                    <label htmlFor="orgSlug" className="block text-sm font-medium text-text-primary mb-2">
-                      Yurt Kodu * (URL için)
-                    </label>
-                    <Input
-                      id="orgSlug"
-                      type="text"
-                      placeholder="ankara-erkek-yurdu"
-                      value={organizationSlug}
-                      onChange={(e) => setOrganizationSlug(e.target.value)}
-                      required
-                    />
-                    <p className="text-xs text-text-secondary mt-1">
-                      Bu kod URL'de görünecek. Sadece küçük harf, rakam ve tire kullanın.
-                    </p>
-                  </div>
-                  
                   <div>
                     <label htmlFor="orgPhone" className="block text-sm font-medium text-text-primary mb-2">
                       Telefon
@@ -193,19 +181,6 @@ export default function RegisterPage() {
                       placeholder="+90 312 123 4567"
                       value={organizationPhone}
                       onChange={(e) => setOrganizationPhone(e.target.value)}
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="orgEmail" className="block text-sm font-medium text-text-primary mb-2">
-                      Yurt Email
-                    </label>
-                    <Input
-                      id="orgEmail"
-                      type="email"
-                      placeholder="info@yurt.edu.tr"
-                      value={organizationEmail}
-                      onChange={(e) => setOrganizationEmail(e.target.value)}
                     />
                   </div>
                   
@@ -323,7 +298,7 @@ export default function RegisterPage() {
               <Button 
                 type="submit" 
                 className="w-full" 
-                disabled={isLoading || !organizationName || !organizationSlug || !adminName || !adminEmail || !adminPassword || !adminPasswordConfirm || !acceptTerms || adminPassword !== adminPasswordConfirm}
+                disabled={isLoading || !organizationName || !adminName || !adminEmail || !adminPassword || !adminPasswordConfirm || !acceptTerms || adminPassword !== adminPasswordConfirm}
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
