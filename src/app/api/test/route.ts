@@ -2,6 +2,14 @@ import { NextResponse } from 'next/server'
 import prisma from '../../../lib/prisma'
 
 export async function GET() {
+  // Only allow in development
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({
+      success: false,
+      message: 'Test endpoint disabled in production'
+    }, { status: 404 })
+  }
+
   try {
     // Test database connection
     await prisma.$connect()
@@ -14,26 +22,14 @@ export async function GET() {
       message: 'Database connection successful',
       data: {
         organizationCount,
-        env: {
-          hasDatabaseUrl: !!process.env.DATABASE_URL,
-          hasNextAuthSecret: !!process.env.NEXTAUTH_SECRET,
-          hasNextAuthUrl: !!process.env.NEXTAUTH_URL,
-          nodeEnv: process.env.NODE_ENV
-        }
+        timestamp: new Date().toISOString()
       }
     })
   } catch (error) {
     console.error('Database connection test failed:', error)
     return NextResponse.json({
       success: false,
-      message: 'Database connection failed',
-      error: error instanceof Error ? error.message : 'Unknown error',
-      env: {
-        hasDatabaseUrl: !!process.env.DATABASE_URL,
-        hasNextAuthSecret: !!process.env.NEXTAUTH_SECRET,
-        hasNextAuthUrl: !!process.env.NEXTAUTH_URL,
-        nodeEnv: process.env.NODE_ENV
-      }
+      message: 'Database connection failed'
     }, { status: 500 })
   } finally {
     await prisma.$disconnect()

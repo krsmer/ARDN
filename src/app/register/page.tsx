@@ -60,8 +60,8 @@ export default function RegisterPage() {
       return
     }
     
-    if (adminPassword.length < 6) {
-      setError('Şifre en az 6 karakter olmalıdır.')
+    if (adminPassword.length < 8) {
+      setError('Şifre en az 8 karakter olmalıdır.')
       setIsLoading(false)
       return
     }
@@ -236,7 +236,7 @@ export default function RegisterPage() {
                   
                   <div>
                     <label htmlFor="adminPassword" className="block text-sm font-medium text-text-primary mb-2">
-                      Şifre * (en az 6 karakter)
+                      Şifre * (en az 8 karakter)
                     </label>
                     <Input
                       id="adminPassword"
@@ -245,7 +245,7 @@ export default function RegisterPage() {
                       value={adminPassword}
                       onChange={(e) => setAdminPassword(e.target.value)}
                       required
-                      minLength={6}
+                      minLength={8}
                     />
                   </div>
                   
@@ -260,7 +260,7 @@ export default function RegisterPage() {
                       value={adminPasswordConfirm}
                       onChange={(e) => setAdminPasswordConfirm(e.target.value)}
                       required
-                      minLength={6}
+                      minLength={8}
                       className={adminPassword && adminPasswordConfirm && adminPassword !== adminPasswordConfirm ? 'border-red-500' : ''}
                     />
                     {adminPassword && adminPasswordConfirm && adminPassword !== adminPasswordConfirm && (
