@@ -1,12 +1,11 @@
-import NextAuth from 'next-auth'
 import type { NextAuthOptions } from 'next-auth'
 import { User } from '@prisma/client'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import bcrypt from 'bcryptjs'
-import prisma from '../../../../lib/prisma'
+import prisma from './prisma'
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
@@ -58,71 +57,50 @@ const authOptions: NextAuthOptions = {
           }
         })
 
-        if (!user) {
+        if (!user || !user.isActive) {
           throw new Error('Geçersiz giriş bilgileri.')
         }
 
         // Verify password
-        const isValidPassword = await bcrypt.compare(
-          credentials.password,
-          user.passwordHash!
-        )
-
+        const isValidPassword = await bcrypt.compare(credentials.password, user.passwordHash)
         if (!isValidPassword) {
           throw new Error('Geçersiz giriş bilgileri.')
         }
 
-        // Check if user is active
-        if (!user.isActive) {
-          throw new Error('Hesabınız aktif değil. Lütfen yönetici ile iletişime geçin.')
-        }
-        
-        // Return user object for NextAuth
         return {
           id: user.id,
           email: user.email,
           name: user.name,
           role: user.role,
           organizationId: user.organizationId,
-          organization: user.organization,
-          rememberMe: credentials.rememberMe === 'true'
+          organization: user.organization
         }
       }
     })
   ],
   session: {
     strategy: 'jwt',
-    // Default session expires in 24 hours
-    maxAge: 24 * 60 * 60, // 1 gün
+    maxAge: 7 * 24 * 60 * 60, // 7 days
   },
   callbacks: {
-    async jwt({ token, user, account }) {
-      // Include custom fields in JWT token
+    async jwt({ token, user }) {
       if (user) {
-        const u = user as User & {
-          organization: { id: string; name: string; slug: string };
-          rememberMe?: boolean; // Giriş formundan bu bilgiyi almalıyız.
-        }
-        token.role = u.role
-        token.organizationId = u.organizationId
-        token.organization = u.organization
-        token.rememberMe = u.rememberMe ?? false;
+        token.role = user.role
+        token.organizationId = user.organizationId
+        token.organization = user.organization
       }
-
-      // Oturum süresini "Beni Hatırla" seçeneğine göre ayarla
-      if (token.rememberMe) {
-        token.exp = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60; // 30 gün
-      }
-
       return token
     },
     async session({ session, token }) {
-      // Include custom fields in session
       if (token) {
         session.user.id = token.sub!
-        session.user.role = token.role as 'ADMIN' | 'USER'
-        session.user.organizationId = token.organizationId as string 
-        session.user.organization = token.organization as { id: string; name: string; slug: string } 
+        session.user.role = token.role as string
+        session.user.organizationId = token.organizationId as string
+        session.user.organization = token.organization as {
+          id: string
+          name: string
+          slug: string
+        }
       }
       return session
     }
@@ -133,6 +111,3 @@ const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET
 }
-
-const handler = NextAuth(authOptions)
-export { handler as GET, handler as POST }

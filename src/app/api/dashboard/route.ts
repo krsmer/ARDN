@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
-import { authOptions } from '../auth/[...nextauth]/route'
+import { authOptions } from '../../../lib/auth'
 import prisma from '../../../lib/prisma'
 
 // GET /api/dashboard - Fetch dashboard statistics and recent activities
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+     const session = await getServerSession(authOptions)
     
     if (!session?.user?.organizationId) {
       return NextResponse.json({
