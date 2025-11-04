@@ -95,7 +95,7 @@ function LoginForm() {
             Öğrenci Takip Sistemi
           </h1>
           <p className="text-text-secondary">
-            ARDN Puan Sistemli Yurt Uygulaması
+            ARDN Puan Sistemli Kurum Uygulaması
           </p>
         </div>
 
@@ -206,14 +206,14 @@ function LoginForm() {
         <Card className="mt-4">
           <CardContent className="p-6 text-center">
             <p className="text-text-secondary mb-4">
-              Yurdunuz henüz sisteme kayıtlı değil mi?
+              Kurumunuz henüz sisteme kayıtlı değil mi?
             </p>
             <Button 
               onClick={() => router.push('/register')}
               variant="outline"
               className="w-full"
             >
-               Yeni Yurt Kaydı Oluştur
+               Yeni Kurum Kaydı Oluştur
             </Button>
           </CardContent>
         </Card>
@@ -221,7 +221,7 @@ function LoginForm() {
         {/* Footer */}
         <div className="text-center mt-6">
           <p className="text-xs text-text-secondary">
-            © 2025 Öğrenci Yurt Takip Sistemi. Tüm hakları saklıdır.
+            © 2025 Öğrenci Kurum Takip Sistemi. Tüm hakları saklıdır.
           </p>
         </div>
       </div>

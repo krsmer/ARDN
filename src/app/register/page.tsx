@@ -72,14 +72,12 @@ export default function RegisterPage() {
       return
     }
     
-    // Ensure slug is generated from organization name
-    if (!organizationSlug || organizationSlug.trim() === '') {
-      setError('Yurt adı geçerli değil. Lütfen geçerli bir yurt adı girin.')
-      setIsLoading(false)
-      return
-    }
-    
-    try {
+        // Ensure slug is generated from organization name
+        if (!organizationSlug || organizationSlug.trim() === '') {
+          setError('Kurum adı geçerli değil. Lütfen geçerli bir kurum adı girin.')
+          setIsLoading(false)
+          return
+        }    try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
@@ -125,10 +123,10 @@ export default function RegisterPage() {
             </span>
           </div>
           <h1 className="text-2xl font-bold text-text-primary mb-2">
-            Yurt Kaydı Oluştur
+            Kurum Kaydı Oluştur
           </h1>
           <p className="text-text-secondary">
-            ARDN Puan Sistemli Yurt Uygulamasına kayıt olun
+            ARDN Puan Sistemli Kurum Uygulamasına kayıt olun
           </p>
         </div>
 
@@ -153,13 +151,13 @@ export default function RegisterPage() {
               {/* Organization Information */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-text-primary border-b border-border pb-2">
-                   Yurt Bilgileri
+                   Kurum Bilgileri
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
                     <label htmlFor="orgName" className="block text-sm font-medium text-text-primary mb-2">
-                      Yurt Adı *
+                      Kurum Adı *
                     </label>
                     <Input
                       id="orgName"
@@ -303,10 +301,10 @@ export default function RegisterPage() {
                 {isLoading ? (
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-background border-t-transparent rounded-full animate-spin" />
-                    Yurt kaydı oluşturuluyor...
+                    Kurum kaydı oluşturuluyor...
                   </div>
                 ) : (
-                  ' Yurt Kaydı Oluştur'
+                  ' Kurum Kaydı Oluştur'
                 )}
               </Button>
             </form>
@@ -325,7 +323,7 @@ export default function RegisterPage() {
             </button>
           </p>
           <p className="text-xs text-text-secondary">
-            © 2025 ARDN Öğrenci Yurt Takip Sistemi. Tüm hakları saklıdır.
+            © 2025 ARDN Öğrenci Kurum Takip Sistemi. Tüm hakları saklıdır.
           </p>
         </div>
       </div>
