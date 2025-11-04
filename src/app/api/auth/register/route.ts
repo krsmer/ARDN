@@ -25,6 +25,8 @@ const registerSchema = z.object({
   adminName: z.string().min(2, 'Yönetici adı en az 2 karakter olmalıdır.'),
   adminEmail: z.string().email('Geçersiz yönetici e-posta adresi.'),
   adminPassword: z.string().min(8, 'Şifre en az 8 karakter olmalıdır.')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, 
+      'Şifre en az 1 büyük harf, 1 küçük harf, 1 rakam ve 1 özel karakter içermelidir.')
 });
 
 export async function POST(request: NextRequest) {
