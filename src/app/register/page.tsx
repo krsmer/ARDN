@@ -162,7 +162,7 @@ export default function RegisterPage() {
                     <Input
                       id="orgName"
                       type="text"
-                      placeholder="Örnek: Ankara Erkek Öğrenci Yurdu"
+                      placeholder="Orta Doğu Teknik Üniversitesi"
                       value={organizationName}
                       onChange={(e) => handleOrganizationNameChange(e.target.value)}
                       required
@@ -176,7 +176,7 @@ export default function RegisterPage() {
                     <Input
                       id="orgPhone"
                       type="tel"
-                      placeholder="+90 312 123 4567"
+                      placeholder="+90 512 123 4567"
                       value={organizationPhone}
                       onChange={(e) => setOrganizationPhone(e.target.value)}
                     />
@@ -225,7 +225,7 @@ export default function RegisterPage() {
                     <Input
                       id="adminEmail"
                       type="email"
-                      placeholder="mehmet@yurt.edu.tr"
+                      placeholder="mehmet@gmail.com"
                       value={adminEmail}
                       onChange={(e) => setAdminEmail(e.target.value)}
                       required
