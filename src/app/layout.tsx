@@ -12,7 +12,7 @@ const splineSans = Spline_Sans({
 
 export const metadata: Metadata = {
   title: "ARDN - Öğrenci Takip Sistemi",
-  description: "Yatılı öğrenci kurumları için puan sistemli takip uygulaması",
+  description: "Kurumlar için puan sistemli öğrenci takip uygulaması",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -45,14 +45,16 @@ export default function RootLayout({
     <html lang="tr" className="dark">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link 
           href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900&display=swap" 
           rel="stylesheet" 
+          crossOrigin="anonymous"
         />
         <link 
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" 
           rel="stylesheet" 
+          crossOrigin="anonymous"
         />
       </head>
       <body

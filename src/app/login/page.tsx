@@ -175,7 +175,7 @@ function LoginForm() {
                     // Simple forgot password implementation
                     const userEmail = email || prompt('Lütfen email adresinizi giriniz:')
                     if (userEmail) {
-                      alert(`📧 Şifre sıfırlama talimatları ${userEmail} adresine gönderildi.\n\n🗺️ Henüz sistem geliştirme aşamasında olduğu için gerçek email gönderilmemektedir.`)
+                      alert(` Henüz sistem geliştirme aşamasında olduğu için gerçek email gönderilmemektedir.`)
                     }
                   }}
                   className="text-sm text-primary hover:underline"
