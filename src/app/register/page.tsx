@@ -66,6 +66,25 @@ export default function RegisterPage() {
       return
     }
     
+    // Validate password strength
+    if (!/(?=.*[a-z])/.test(adminPassword)) {
+      setError('Şifre en az 1 küçük harf içermelidir.')
+      setIsLoading(false)
+      return
+    }
+    
+    if (!/(?=.*[A-Z])/.test(adminPassword)) {
+      setError('Şifre en az 1 büyük harf içermelidir.')
+      setIsLoading(false)
+      return
+    }
+    
+    if (!/(?=.*\d)/.test(adminPassword)) {
+      setError('Şifre en az 1 rakam içermelidir.')
+      setIsLoading(false)
+      return
+    }
+    
     if (!acceptTerms) {
       setError('Devam etmek için kullanım koşullarını kabul etmelisiniz.')
       setIsLoading(false)
@@ -234,7 +253,7 @@ export default function RegisterPage() {
                   
                   <div>
                     <label htmlFor="adminPassword" className="block text-sm font-medium text-text-primary mb-2">
-                      Şifre * (en az 8 karakter)
+                      Şifre * (en az 8 karakter, büyük-küçük harf ve rakam içermeli)
                     </label>
                     <Input
                       id="adminPassword"
@@ -245,6 +264,22 @@ export default function RegisterPage() {
                       required
                       minLength={8}
                     />
+                    {adminPassword && (
+                      <div className="mt-2 text-xs space-y-1">
+                        <p className={adminPassword.length >= 8 ? 'text-green-500' : 'text-red-500'}>
+                          {adminPassword.length >= 8 ? '✓' : '✗'} En az 8 karakter
+                        </p>
+                        <p className={/[a-z]/.test(adminPassword) ? 'text-green-500' : 'text-red-500'}>
+                          {/[a-z]/.test(adminPassword) ? '✓' : '✗'} Küçük harf
+                        </p>
+                        <p className={/[A-Z]/.test(adminPassword) ? 'text-green-500' : 'text-red-500'}>
+                          {/[A-Z]/.test(adminPassword) ? '✓' : '✗'} Büyük harf
+                        </p>
+                        <p className={/\d/.test(adminPassword) ? 'text-green-500' : 'text-red-500'}>
+                          {/\d/.test(adminPassword) ? '✓' : '✗'} Rakam
+                        </p>
+                      </div>
+                    )}
                   </div>
                   
                   <div>
